@@ -1,29 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
   <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" href="/favicon.png" />
-    <title>App</title>
+    <meta
+      name="description"
+      content="BitSnap Story App is a web application that allows users to share their stories and experiences with others."
+    />
+    <meta name="theme-color" content="#2563EB" />
 
-    <script type="module" src="/scripts/index.js"></script>
+    <title>BitSnap</title>
+
+    <link rel="icon" href="/src/public/icon/icon.svg" />
+    <link rel="apple-touch-icon" href="/src/public/icon/icon.svg" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
   </head>
   <body>
-    <header>
-      <div class="main-header container">
-        <a class="brand-name" href="#/">App</a>
+    <a href="#mainContent" class="skip-link">Skip to content</a>
 
-        <nav id="navigation-drawer" class="navigation-drawer">
-          <ul id="nav-list" class="nav-list">
-            <li><a href="#/">Beranda</a></li>
-            <li><a href="#/about">About</a></li>
-          </ul>
-        </nav>
+    <header id="appBar" class="app-bar"></header>
 
-        <button id="drawer-button" class="drawer-button">☰</button>
-      </div>
-    </header>
+    <main id="mainContent" class="main-content" tabindex="-1">
+      <div id="pageContent"></div>
+    </main>
 
-    <main id="main-content" class="main-content"></main>
+    <footer class="footer">
+      <p>&copy; 2025 BitSnap</p>
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>

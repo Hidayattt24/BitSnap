@@ -1,0 +1,120 @@
+.auth {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-xl) var(--space-md);
+  min-height: 60vh;
+}
+
+.auth-container {
+  max-width: 420px;
+  width: 100%;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-xl);
+}
+
+.auth__title {
+  text-align: center;
+  color: var(--primary-color);
+  font-size: var(--font-xxl);
+  margin-bottom: var(--space-xl);
+  position: relative;
+}
+
+.auth__title::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background-color: var(--primary-color);
+  border-radius: 2px;
+}
+
+.auth-form {
+  margin-bottom: var(--space-xl);
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: var(--space-xl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid #e9ecef;
+}
+
+.auth-link {
+  color: var(--primary-color);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.auth-link:hover {
+  color: var(--primary-dark);
+}
+
+.auth-form .form-group {
+  margin-bottom: var(--space-lg);
+}
+
+.auth-form .form-label {
+  font-weight: 600;
+}
+
+.auth-form .form-actions {
+  margin-top: var(--space-xl);
+}
+
+.auth-form .button {
+  width: 100%;
+}
+
+.form-group {
+  margin-bottom: var(--space-lg);
+}
+
+.form-label {
+  display: block;
+  margin-bottom: var(--space-sm);
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.form-input {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #e9ecef;
+  border-radius: var(--radius-md);
+  font-size: var(--font-medium);
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px rgba(235, 66, 49, 0.1);
+  outline: none;
+}
+
+.form-input--error {
+  border-color: var(--error);
+}
+
+.form-error {
+  color: var(--error);
+  font-size: var(--font-small);
+  margin-top: var(--space-xs);
+}
+
+@media screen and (max-width: 768px) {
+  .auth-container {
+    padding: var(--space-md);
+  }
+
+  .auth__title {
+    font-size: var(--font-xl);
+  }
+}
