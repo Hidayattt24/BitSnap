@@ -43,14 +43,34 @@ const createHomeTemplate = ({
   `;
 
   const emptyTemplate = `
-    <div class="stories-empty">
-      <i class="fas fa-book-open stories-empty__icon"></i>
-      <p>No stories available yet. Be the first to share your story!</p>
-      <a href="#/add" class="button">
-        <i class="fas fa-plus-circle"></i> Add New Story
+  <div class="welcome-section">
+    <div class="welcome-content">
+      <img src="/src/public/icon/icon.svg" alt="Welcome to BitSnap" class="welcome-image">
+      <h2 class="welcome-title">Welcome to BitSnap!</h2>
+      <p class="welcome-description">
+        Share your learning journey with the Dicoding community. Capture moments, mark locations, and inspire others.
+      </p>
+      <div class="welcome-features">
+        <div class="welcome-feature">
+          <i class="fas fa-camera-retro"></i>
+          <span>Share Visual Stories</span>
+        </div>
+        <div class="welcome-feature">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>Mark Locations</span>
+        </div>
+        <div class="welcome-feature">
+          <i class="fas fa-users"></i>
+          <span>Learn</span>
+        </div>
+      </div>
+      <a href="#/add" class="welcome-button">
+        <i class="fas fa-plus-circle"></i>
+        Share Your First Story
       </a>
     </div>
-  `;
+  </div>
+`;
 
   const storiesTemplate =
     stories.length > 0

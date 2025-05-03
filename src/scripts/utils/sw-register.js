@@ -9,7 +9,7 @@ export const registerSW = () => {
         text: "Aplikasi telah diperbarui. Refresh untuk melihat versi terbaru.",
         icon: "info",
         showCancelButton: true,
-        confirmButtonColor: "#2563EB",
+        confirmButtonColor: "#EB4231",
         cancelButtonColor: "#6B7280",
         confirmButtonText: "Refresh",
         cancelButtonText: "Nanti",
@@ -24,7 +24,7 @@ export const registerSW = () => {
         title: "Aplikasi siap offline!",
         text: "Anda dapat menggunakan aplikasi ini tanpa koneksi internet.",
         icon: "success",
-        confirmButtonColor: "#2563EB",
+        confirmButtonColor: "#EB4231",
         confirmButtonText: "OK",
       });
     },

@@ -1,5 +1,5 @@
-import API_CONFIG from "../config/api-config.js";
-import storyRepository from "../data/story-repository.js";
+import API_CONFIG from "../config/endpoint.js";
+import storyRepository from "../services/story-data.js";
 import Swal from "sweetalert2";
 
 class WebPushHelper {
@@ -59,7 +59,7 @@ class WebPushHelper {
         title: "Notifikasi Aktif!",
         text: "Anda akan menerima notifikasi saat ada story baru.",
         icon: "success",
-        confirmButtonColor: "#2563EB",
+        confirmButtonColor: "#EB4231",
       });
 
       return subscriptionData;
@@ -70,7 +70,7 @@ class WebPushHelper {
         title: "Gagal Aktivasi Notifikasi",
         text: error.message,
         icon: "error",
-        confirmButtonColor: "#2563EB",
+        confirmButtonColor: "#EB4231",
       });
 
       throw error;
@@ -108,7 +108,7 @@ class WebPushHelper {
         title: "Notifikasi Dinonaktifkan",
         text: "Anda tidak akan menerima notifikasi lagi.",
         icon: "info",
-        confirmButtonColor: "#2563EB",
+        confirmButtonColor: "#EB4231",
       });
 
       return true;
@@ -119,7 +119,7 @@ class WebPushHelper {
         title: "Gagal Menonaktifkan Notifikasi",
         text: error.message,
         icon: "error",
-        confirmButtonColor: "#2563EB",
+        confirmButtonColor: "#EB4231",
       });
 
       return false;
@@ -203,7 +203,7 @@ class WebPushHelper {
       text: "Kami akan memberi tahu Anda saat ada story baru.",
       icon: "question",
       showCancelButton: true,
-      confirmButtonColor: "#2563EB",
+      confirmButtonColor: "#EB4231",
       cancelButtonColor: "#6B7280",
       confirmButtonText: "Ya, aktifkan!",
       cancelButtonText: "Nanti saja",
@@ -218,7 +218,7 @@ class WebPushHelper {
             title: "Notifikasi Tidak Diizinkan",
             text: "Anda dapat mengaktifkannya nanti melalui pengaturan browser.",
             icon: "info",
-            confirmButtonColor: "#2563EB",
+            confirmButtonColor: "#EB4231",
           });
         }
 

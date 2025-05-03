@@ -20,7 +20,7 @@ const API_CONFIG = {
       name: "Satellite",
       url: "https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
       attribution: "&copy; Google Maps",
-      maxZoom: 20,
+      maxZoom: 40,
       subdomains: ["mt0", "mt1", "mt2", "mt3"],
     },
   },

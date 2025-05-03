@@ -1,11 +1,11 @@
-import HomePresenter from "../presenters/home-presenter.js";
-import DetailPresenter from "../presenters/detail-presenter.js";
-import AddStoryPresenter from "../presenters/add-story-presenter.js";
-import LoginPresenter from "../presenters/login-presenter.js";
-import RegisterPresenter from "../presenters/register-presenter.js";
+import HomePresenter from "../modules/dashboard.js";
+import DetailPresenter from "../modules/story-detail.js";
+import AddStoryPresenter from "../modules/story-upload.js";
+import LoginPresenter from "../modules/auth-login.js";
+import RegisterPresenter from "../modules/auth-register.js";
 import AboutPage from "../views/pages/about-page.js";
-import { applyViewTransition } from "../utils/view-transition.js";
-import authRepository from "../data/auth-repository.js";
+import { applyViewTransition } from "../utils/transition-util.js";
+import authRepository from "../services/user-session.js";
 import Swal from "sweetalert2";
 
 const routes = {

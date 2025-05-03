@@ -1,6 +1,6 @@
-import DetailPage from "../views/pages/detail-page.js";
-import storyRepository from "../data/story-repository.js";
-import { applyCustomAnimation } from "../utils/view-transition.js";
+import DetailPage from "../views/pages/story-detail.js";
+import storyRepository from "../services/story-data.js";
+import { applyCustomAnimation } from "../utils/transition-util.js";
 
 class DetailPresenter {
   constructor(params = {}) {

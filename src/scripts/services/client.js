@@ -1,5 +1,5 @@
 import axios from "axios";
-import API_CONFIG from "../config/api-config.js";
+import API_CONFIG from "../config/endpoint.js";
 
 class Api {
   constructor() {

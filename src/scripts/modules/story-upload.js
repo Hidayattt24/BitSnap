@@ -1,8 +1,8 @@
-import AddStoryPage from "../views/pages/add-story-page.js";
-import storyRepository from "../data/story-repository.js";
-import authRepository from "../data/auth-repository.js";
+import AddStoryPage from "../views/pages/create-story.js";
+import storyRepository from "../services/story-data.js";
+import authRepository from "../services/user-session.js";
 import webPushHelper from "../utils/web-push-helper.js";
-import { applyCustomAnimation } from "../utils/view-transition.js";
+import { applyCustomAnimation } from "../utils/transition-util.js";
 import Swal from "sweetalert2";
 
 class AddStoryPresenter {

@@ -1,7 +1,7 @@
-import HomePage from "../views/pages/home-page.js";
-import storyRepository from "../data/story-repository.js";
-import authRepository from "../data/auth-repository.js";
-import { applyCustomAnimation } from "../utils/view-transition.js";
+import HomePage from "../views/pages/home-screen.js";
+import storyRepository from "../services/story-data.js";
+import authRepository from "../services/user-session.js";
+import { applyCustomAnimation } from "../utils/transition-util.js";
 import Swal from "sweetalert2";
 
 class HomePresenter {

@@ -1,6 +1,6 @@
 import createHomeTemplate from "../template/home-template.js";
-import "../components/story-item.js";
-import MapHelper from "../../utils/map-helper.js";
+import "../components/story-card.js";
+import MapHelper from "../../utils/location-util.js";
 
 class HomePage {
   constructor({ stories = [], isLoading = false, error = null, container }) {

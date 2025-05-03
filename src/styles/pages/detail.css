@@ -29,13 +29,13 @@
 
 .story-detail__image-container {
   width: 100%;
-  max-height: 400px;
-  overflow: hidden;
+  /* Dihapus max-height dan overflow untuk menampilkan gambar penuh */
 }
 
 .story-detail__image {
   width: 100%;
-  object-fit: cover;
+  height: auto; /* Ditambahkan agar gambar mempertahankan rasio aspek */
+  display: block; /* Menghilangkan gap bawah pada gambar */
 }
 
 .story-detail__content {

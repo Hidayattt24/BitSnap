@@ -1,5 +1,5 @@
-import api from "./api.js";
-import API_CONFIG from "../config/api-config.js";
+import api from "./client.js";
+import API_CONFIG from "../config/endpoint.js";
 
 class AuthRepository {
   constructor() {

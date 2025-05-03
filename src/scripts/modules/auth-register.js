@@ -1,6 +1,6 @@
-import RegisterPage from "../views/pages/register-page.js";
-import authRepository from "../data/auth-repository.js";
-import { applyCustomAnimation } from "../utils/view-transition.js";
+import RegisterPage from "../views/pages/sign-up.js";
+import authRepository from "../services/user-session.js";
+import { applyCustomAnimation } from "../utils/transition-util.js";
 import Swal from "sweetalert2";
 
 class RegisterPresenter {
@@ -20,7 +20,7 @@ class RegisterPresenter {
         title: "Already Logged In",
         text: "You are already logged in. Please log out first to register a new account.",
         icon: "info",
-        confirmButtonColor: "#2563EB",
+        confirmButtonColor: "#EB4231",
       }).then(() => {
         window.location.hash = "#/";
       });
@@ -72,7 +72,7 @@ class RegisterPresenter {
         title: "Registration Successful!",
         text: "Your account has been created. You can now log in.",
         icon: "success",
-        confirmButtonColor: "#2563EB",
+        confirmButtonColor: "#EB4231",
         confirmButtonText: "Login Now",
       }).then(() => {
         window.location.hash = "#/login";

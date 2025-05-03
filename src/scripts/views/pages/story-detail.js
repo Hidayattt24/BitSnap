@@ -1,5 +1,5 @@
 import createDetailTemplate from "../template/detail-template.js";
-import MapHelper from "../../utils/map-helper.js";
+import MapHelper from "../../utils/location-util.js";
 
 class DetailPage {
   constructor({ story = null, isLoading = false, error = null, container }) {

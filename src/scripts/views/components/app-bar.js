@@ -1,4 +1,4 @@
-import authRepository from "../../data/auth-repository.js";
+import authRepository from "../../services/user-session.js";
 
 class AppBar extends HTMLElement {
   constructor() {
@@ -52,16 +52,16 @@ class AppBar extends HTMLElement {
           this._isAuthenticated ? "" : "app-nav__list--guest"
         }">
           <li class="app-nav__item">
-            <a href="#/about" class="app-nav__link" data-link="about">
-              <i class="fas fa-info-circle"></i>
-              <span>About</span>
-            </a>
-          </li>
-
-         <li class="app-nav__item">
             <a href="#/" class="app-nav__link" data-link="home">
               <i class="fas fa-compass"></i>
               <span>Explore</span>
+            </a>
+          </li>
+
+          <li class="app-nav__item">
+            <a href="#/about" class="app-nav__link" data-link="about">
+              <i class="fas fa-info-circle"></i>
+              <span>About</span>
             </a>
           </li>
           
@@ -73,6 +73,10 @@ class AppBar extends HTMLElement {
                   <i class="fas fa-plus-circle"></i>
                   <span>Share Story</span>
                 </a>
+              </li>
+              
+              <li class="app-nav__item">
+                <notification-toggle></notification-toggle>
               </li>
               
               <li class="app-nav__item app-nav__item--user">

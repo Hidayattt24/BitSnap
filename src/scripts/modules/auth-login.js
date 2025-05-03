@@ -1,7 +1,7 @@
-import LoginPage from "../views/pages/login-page.js";
-import authRepository from "../data/auth-repository.js";
+import LoginPage from "../views/pages/sign-in.js";
+import authRepository from "../services/user-session.js";
 import webPushHelper from "../utils/web-push-helper.js";
-import { applyCustomAnimation } from "../utils/view-transition.js";
+import { applyCustomAnimation } from "../utils/transition-util.js";
 import Swal from "sweetalert2";
 
 class LoginPresenter {

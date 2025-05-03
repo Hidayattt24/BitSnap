@@ -47,3 +47,122 @@
     grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
   }
 }
+
+.welcome-section {
+  background: linear-gradient(
+    135deg,
+    var(--white) 0%,
+    var(--background-light) 100%
+  );
+  border-radius: var(--radius-lg);
+  padding: var(--space-xxl) var(--space-xl);
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+
+.welcome-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.welcome-image {
+  width: 200px;
+  height: auto;
+  margin-bottom: var(--space-xl);
+  animation: float 3s ease-in-out infinite;
+}
+
+.welcome-title {
+  font-size: var(--font-xxl);
+  color: var(--primary-color);
+  margin-bottom: var(--space-md);
+  font-weight: bold;
+}
+
+.welcome-description {
+  font-size: var(--font-large);
+  color: var(--text-light);
+  margin-bottom: var(--space-xl);
+  line-height: 1.6;
+}
+
+.welcome-features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.welcome-feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background-color: var(--white);
+  border-radius: var(--radius-md);
+  transition: transform 0.3s ease;
+}
+
+.welcome-feature:hover {
+  transform: translateY(-5px);
+}
+
+.welcome-feature i {
+  font-size: 2rem;
+  color: var(--primary-color);
+  margin-bottom: var(--space-sm);
+}
+
+.welcome-feature span {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.welcome-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background-color: var(--primary-color);
+  color: var(--white);
+  padding: 1rem 2rem;
+  border-radius: var(--radius-lg);
+  font-size: var(--font-medium);
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(235, 66, 49, 0.2);
+}
+
+.welcome-button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(235, 66, 49, 0.3);
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .welcome-section {
+    padding: var(--space-xl) var(--space-md);
+  }
+
+  .welcome-features {
+    grid-template-columns: 1fr;
+  }
+
+  .welcome-button {
+    width: 100%;
+    justify-content: center;
+  }
+}

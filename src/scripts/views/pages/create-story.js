@@ -1,6 +1,6 @@
-import createAddStoryTemplate from "../template/add-story-template.js";
-import MapHelper from "../../utils/map-helper.js";
-import CameraHelper from "../../utils/camera-helper.js";
+import createAddStoryTemplate from "../template/create-template.js";
+import MapHelper from "../../utils/location-util.js";
+import CameraHelper from "../../utils/camera-util.js";
 
 class AddStoryPage {
   constructor({ isLoading = false, container }) {
