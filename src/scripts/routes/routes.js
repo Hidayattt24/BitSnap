@@ -1,8 +1,8 @@
-import HomePresenter from "../modules/dashboard.js";
-import DetailPresenter from "../modules/story-detail.js";
-import AddStoryPresenter from "../modules/story-upload.js";
-import LoginPresenter from "../modules/auth-login.js";
-import RegisterPresenter from "../modules/auth-register.js";
+import HomePresenter from "../presenters/dashboard.js";
+import DetailPresenter from "../presenters/story-detail.js";
+import AddStoryPresenter from "../presenters/story-upload.js";
+import LoginPresenter from "../presenters/auth-login.js";
+import RegisterPresenter from "../presenters/auth-register.js";
 import AboutPage from "../views/pages/about-page.js";
 import { applyViewTransition } from "../utils/transition-util.js";
 import authRepository from "../services/user-session.js";
