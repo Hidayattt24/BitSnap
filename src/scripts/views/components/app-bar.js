@@ -74,6 +74,13 @@ class AppBar extends HTMLElement {
                   <span>Share Story</span>
                 </a>
               </li>
+
+                <li class="app-nav__item">
+                 <a href="#/saved-reports" class="app-nav__link" data-link="saved-reports">
+                  <i class="fas fa-file-alt"></i>
+                 <span>Laporan Disimpan</span>
+                 </a>
+               </li>
               
               <li class="app-nav__item">
                 <notification-toggle></notification-toggle>

@@ -3,6 +3,7 @@ import DetailPresenter from "../presenters/story-detail.js";
 import AddStoryPresenter from "../presenters/story-upload.js";
 import LoginPresenter from "../presenters/auth-login.js";
 import RegisterPresenter from "../presenters/auth-register.js";
+import SavedReportPresenter from "../presenters/saved-report.js";
 import AboutPage from "../views/pages/about-page.js";
 import { applyViewTransition } from "../utils/transition-util.js";
 import authRepository from "../services/user-session.js";
@@ -15,6 +16,7 @@ const routes = {
   "/add": AddStoryPresenter,
   "/login": LoginPresenter,
   "/register": RegisterPresenter,
+  "/saved-reports": SavedReportPresenter,
 };
 
 const knownFragments = ["mainContent", "pageContent"];
@@ -116,7 +118,7 @@ class Router {
           <h2>Page Not Found</h2>
           <p class="error-message">The page you're looking for doesn't exist.</p>
           <button class="button" onclick="window.location.hash = '#'">
-            <i class="fas fa-home"></i> Go to Homepage
+            <i class="fas fa-compass"></i> Go to Explore
           </button>
         </div>
       `;
