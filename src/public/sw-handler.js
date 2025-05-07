@@ -68,25 +68,18 @@ self.addEventListener("push", (event) => {
     notificationData = event.data.json();
   } catch (error) {
     notificationData = {
-      title: "BitSnap Update",
+      title: "New Notification",
       options: {
-        body: event.data ? event.data.text() : "Ada cerita baru untuk Anda!",
-        icon: "/src/public/icon/icon.svg",
-        badge: "/src/public/icon/icon.svg",
-        vibrate: [100, 50, 100],
-        data: {
-          url: "/#/",
-        },
+        body: event.data ? event.data.text() : "No content",
+        icon: "/favicon.ico",
       },
     };
   }
 
-  event.waitUntil(
-    self.registration.showNotification(
-      notificationData.title,
-      notificationData.options
-    )
-  );
+  const title = notificationData.title || "Dicoding Story";
+  const options = notificationData.options || {};
+
+  event.waitUntil(self.registration.showNotification(title, options));
 });
 
 self.addEventListener("notificationclick", (event) => {
