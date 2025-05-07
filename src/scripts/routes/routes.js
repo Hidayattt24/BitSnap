@@ -82,9 +82,9 @@ class Router {
       if (this._isProtectedRoute(hash) && !this._isAuthenticated()) {
         Swal.fire({
           title: "Login Required",
-          text: "Please login to access this page",
+          text: "Hi there 👋🏼 Please login to access this page",
           icon: "info",
-          confirmButtonColor: "#2563EB",
+          confirmButtonColor: "#EB4231",
         }).then(() => {
           this.navigate("/login");
         });
