@@ -1,0 +1,54 @@
+Kriteria wajib 
+Dalam mengerjakan proyek ini, ada beberapa kriteria yang perlu Anda penuhi. Kriteria-kriteria tersebut diperlukan agar Anda dapat lulus dari tugas ini.
+
+Berikut adalah daftar kriteria utama yang harus Anda penuhi.
+
+Kriteria Wajib 1: Mempertahankan Seluruh Kriteria Wajib Submission Sebelumnya
+Sebelum mengirim hasil submission, pastikan seluruh ketentuan-ketentuan diterimanya submission pertama masih terpenuhi dengan baik.
+
+Berikut adalah daftar kriteria pada submission sebelumnya yang perlu dipertahankan.
+
+Memanfaatkan satu API sebagai sumber data.
+Menggunakan arsitektur single-page application.
+Menampilkan data dari API.
+Memiliki fitur tambah data baru.
+Menerapkan aksesibilitas sesuai dengan standar.
+Merancang transisi halaman yang halus.
+Kriteria Wajib 2: Menerapkan Push Notification
+Salah satu background execution dalam aplikasi web adalah push notification. Anda wajib menerapkan push notification dari API yang telah kami sediakan. Jadi, silakan simak kembali dokumentasi REST API yang Anda gunakan sebelumnya untuk mendapatkan informasi VAPID keys public.
+
+Kriteria Wajib 3: Mengadopsi PWA (Installable & Offline)
+Aplikasi mengadopsi progressive web apps (PWA) dengan ketentuan WAJIB berikut.
+
+Mengadopsi arsitektur Application Shell: memisahkan bagian konten statis dan dinamis.
+Aplikasi dapat dipasang ke Homescreen: ditandai dengan munculnya icon add to homescreen pada browser.
+Aplikasi dapat diakses dalam keadaan offline tanpa ada bagian UI yang gagal ditampilkan.
+Kriteria Wajib 4: Manfaatkan IndexedDB untuk Menyimpan Data
+Dalam submission, Anda HARUS menerapkan IndexedDB API sehingga dapat menambah pengalaman offline. Aplikasi WAJIB menyediakan cara untuk
+
+menyimpan,
+menampilkan, dan
+menghapus data yang tersimpan.
+Anda bebas menyimpan data dalam bentuk dan konteks apa pun selama itu relevan dengan aplikasi. Sebagai gambaran, Anda bisa menyimpan data yang berasal dari API dan menampilkannya ke suatu halaman sebagaimana kami contohkan dalam latihan kelas.
+
+Kriteria Wajib 5: Distribusikan secara Publik
+Aplikasi harus didistribusikan atau di-deploy sehingga dapat diakses secara publik. Berikut adalah ketentuan WAJIB yang perlu Anda ikuti.
+
+Memanfaatkan salah satu dari platform berikut.
+GitHub Pages
+Netlify
+Firebase Hosting
+Melampirkan URL hasil deployment dalam STUDENT.txt. Jika tidak, submission Anda kami tolak.
+
+Selain kriteria utama, ada kriteria opsional juga yang dapat Anda penuhi agar mendapat penilaian yang lebih tinggi.
+
+Kriteria Opsional 1: Memiliki Shortcuts dan Screenshots untuk Desktop dan Mobile
+Untuk memaksimalkan pengalaman layaknya aplikasi native (platform specific-app), Anda dianjurkan menambahkan component shortcut dan screenshots dalam web app manifest.
+
+Minimal menyediakan satu tombol shortcut ke halaman tambah data baru.
+Minimal menyediakan satu screenshot untuk perangkat berlayar lebar (desktop) dan sempit (mobile).
+Kriteria Opsional 2: Menggunakan Workbox untuk Offline Capability
+Membangun offline capability menjadi tantangan tersendiri jika menyusun logika strategi caching dari nol. Anda disarankan untuk memanfaatkan library workbox dalam masalah ini.
+
+Kriteria Opsional 3: Menyediakan Halaman Not Found
+Tidak menutup kemungkinan pengguna mengakses alamat dengan tujuan yang tidak dikenali oleh aplikasi. Nah, Anda dapat menambahkan dan menampilkan halaman Not Found dalam kasus ini sehingga pengguna memahami bahwa mereka mengakses alamat yang tak dikenal.
