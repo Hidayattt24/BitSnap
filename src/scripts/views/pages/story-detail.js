@@ -64,61 +64,81 @@ class DetailPage {
   }
 
   async _initSaveButton() {
-    const saveButton = document.getElementById('saveStoryButton');
-    const cancelButton = document.getElementById('cancelSaveButton');
-    const removeButton = document.getElementById('removeStoryButton');
-    
+    const saveButton = document.getElementById("saveStoryButton");
+    const cancelButton = document.getElementById("cancelSaveButton");
+    const removeButton = document.getElementById("removeStoryButton");
+
     if (!saveButton || !cancelButton || !removeButton) return;
 
     try {
       const isSaved = await Database.isStorySaved(this._story.id);
-      this._updateSaveButtonState(saveButton, cancelButton, removeButton, isSaved);
+      this._updateSaveButtonState(
+        saveButton,
+        cancelButton,
+        removeButton,
+        isSaved
+      );
 
       // Save button handler
-      saveButton.addEventListener('click', async (e) => {
+      saveButton.addEventListener("click", async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        
+
         // Show cancel button first
-        saveButton.style.display = 'none';
-        cancelButton.style.display = 'block';
-        
+        saveButton.style.display = "none";
+        cancelButton.style.display = "block";
+
         // Only show confirmation if user hasn't clicked cancel
         const confirmSave = async () => {
           try {
             const result = await Swal.fire({
-              title: 'Save Story',
-              text: 'Do you want to save this story?',
-              icon: 'question',
+              title: "Save Story",
+              text: "Do you want to save this story?",
+              icon: "question",
               showCancelButton: true,
-              confirmButtonColor: '#28a745',
-              cancelButtonColor: '#6c757d',
-              confirmButtonText: 'Yes, save it!',
-              cancelButtonText: 'Cancel'
+              confirmButtonColor: "#EB4231",
+              cancelButtonColor: "#6c757d",
+              confirmButtonText: "Yes, save it!",
+              cancelButtonText: "Cancel",
             });
 
             if (result.isConfirmed) {
               await Database.saveStory(this._story);
-              this._updateSaveButtonState(saveButton, cancelButton, removeButton, true);
-              
+              this._updateSaveButtonState(
+                saveButton,
+                cancelButton,
+                removeButton,
+                true
+              );
+
               Swal.fire({
-                title: 'Saved!',
-                text: 'Story saved successfully',
-                icon: 'success',
+                title: "Saved!",
+                text: "Story saved successfully",
+                icon: "success",
                 timer: 2000,
-                showConfirmButton: false
+                showConfirmButton: false,
               });
             } else {
-              this._updateSaveButtonState(saveButton, cancelButton, removeButton, false);
+              this._updateSaveButtonState(
+                saveButton,
+                cancelButton,
+                removeButton,
+                false
+              );
             }
           } catch (error) {
-            console.error('Error saving story:', error);
+            console.error("Error saving story:", error);
             Swal.fire({
-              title: 'Error',
+              title: "Error",
               text: error.message,
-              icon: 'error'
+              icon: "error",
             });
-            this._updateSaveButtonState(saveButton, cancelButton, removeButton, false);
+            this._updateSaveButtonState(
+              saveButton,
+              cancelButton,
+              removeButton,
+              false
+            );
           }
         };
 
@@ -126,54 +146,63 @@ class DetailPage {
       });
 
       // Cancel button handler
-      cancelButton.addEventListener('click', (e) => {
+      cancelButton.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        
+
         // Directly update UI state without any async operations
-        this._updateSaveButtonState(saveButton, cancelButton, removeButton, false);
+        this._updateSaveButtonState(
+          saveButton,
+          cancelButton,
+          removeButton,
+          false
+        );
       });
 
       // Remove button handler
-      removeButton.addEventListener('click', async (e) => {
+      removeButton.addEventListener("click", async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        
+
         try {
           const result = await Swal.fire({
-            title: 'Remove Story',
-            text: 'Are you sure you want to remove this story from saved stories?',
-            icon: 'warning',
+            title: "Remove Story",
+            text: "Are you sure you want to remove this story from saved stories?",
+            icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, remove it!'
+            confirmButtonColor: "#EB4231",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, remove it!",
           });
 
           if (result.isConfirmed) {
             await Database.removeReport(this._story.id);
-            this._updateSaveButtonState(saveButton, cancelButton, removeButton, false);
-            
+            this._updateSaveButtonState(
+              saveButton,
+              cancelButton,
+              removeButton,
+              false
+            );
+
             Swal.fire({
-              title: 'Removed!',
-              text: 'Story removed from saved stories',
-              icon: 'success',
+              title: "Removed!",
+              text: "Story removed from saved stories",
+              icon: "success",
               timer: 2000,
-              showConfirmButton: false
+              showConfirmButton: false,
             });
           }
         } catch (error) {
-          console.error('Error removing story:', error);
+          console.error("Error removing story:", error);
           Swal.fire({
-            title: 'Error',
+            title: "Error",
             text: error.message,
-            icon: 'error'
+            icon: "error",
           });
         }
       });
-
     } catch (error) {
-      console.error('Error checking saved status:', error);
+      console.error("Error checking saved status:", error);
     }
   }
 
@@ -182,13 +211,13 @@ class DetailPage {
     if (!saveButton || !cancelButton || !removeButton) return;
 
     if (isSaved) {
-      saveButton.style.display = 'none';
-      cancelButton.style.display = 'none';
-      removeButton.style.display = 'block';
+      saveButton.style.display = "none";
+      cancelButton.style.display = "none";
+      removeButton.style.display = "block";
     } else {
-      saveButton.style.display = 'block';
-      cancelButton.style.display = 'none';
-      removeButton.style.display = 'none';
+      saveButton.style.display = "block";
+      cancelButton.style.display = "none";
+      removeButton.style.display = "none";
     }
   }
 
