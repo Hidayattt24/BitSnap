@@ -98,12 +98,46 @@
   margin-bottom: var(--space-lg);
 }
 
-.button--saved {
+.story-detail__action-buttons {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.story-detail__action-buttons .button {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.story-detail__action-buttons .button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.button--danger {
   background-color: var(--danger-color);
+  color: var(--white);
+}
+
+.button--danger:hover {
+  background-color: var(--danger-dark-color);
+}
+
+#removeStoryButton {
+  display: none; /* Initially hidden */
+}
+
+#removeStoryButton.show {
+  display: block;
+}
+
+.button--saved {
+  background-color: var(--success-color);
 }
 
 .button--saved:hover {
-  background-color: var(--danger-dark-color);
+  background-color: var(--success-dark-color);
 }
 
 .saved-stories {

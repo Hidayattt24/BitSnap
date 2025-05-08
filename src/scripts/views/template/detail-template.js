@@ -88,9 +88,14 @@ const createDetailTemplate = ({
 
   const saveButtonTemplate = `
     <div class="story-detail__actions">
-      <button id="saveStoryButton" class="button">
-        <i class="fas fa-bookmark"></i> Save Story
-      </button>
+      <div class="story-detail__action-buttons">
+        <button id="saveStoryButton" class="button">
+          <i class="far fa-bookmark"></i> Save Story
+        </button>
+        <button id="removeStoryButton" class="button button--danger" style="display: none;">
+          <i class="fas fa-times"></i> Remove from Saved
+        </button>
+      </div>
     </div>
   `;
 
