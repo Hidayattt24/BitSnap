@@ -76,9 +76,9 @@ class AppBar extends HTMLElement {
               </li>
 
                 <li class="app-nav__item">
-                 <a href="#/saved-reports" class="app-nav__link" data-link="saved-reports">
-                  <i class="fas fa-file-alt"></i>
-                 <span>Laporan Disimpan</span>
+                 <a href="#/saved-stories" class="app-nav__link" data-link="saved-stories">
+                  <i class="fas fa-bookmark"></i>
+                 <span>Saved Stories</span>
                  </a>
                </li>
               
