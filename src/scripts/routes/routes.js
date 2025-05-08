@@ -85,7 +85,7 @@ class Router {
         Swal.fire({
           title: "Login Required",
           text: "Hi there 👋🏼 Please login to access this page",
-          icon: "info",
+          icon: "warning",
           confirmButtonColor: "#EB4231",
         }).then(() => {
           this.navigate("/login");
