@@ -46,7 +46,7 @@ const Database = {
       throw new Error("Story already saved");
     }
 
-    return (await dbPromise).put(OBJECT_STORE_NAME, story);
+    return this.putReport(story);
   },
 
   async isStorySaved(id) {

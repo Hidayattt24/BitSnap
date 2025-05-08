@@ -6,6 +6,10 @@ class SavedStoriesPage {
     this._stories = [];
   }
 
+  async init() {
+    await this.render();
+  }
+
   async render() {
     this._stories = await Database.getAllReports();
     
@@ -13,6 +17,9 @@ class SavedStoriesPage {
       <section class="saved-stories">
         <div class="saved-stories__header">
           <h2 class="saved-stories__title">Saved Stories</h2>
+          <a href="#/" class="button secondary">
+            <i class="fas fa-arrow-left"></i> Back to Home
+          </a>
         </div>
         
         ${this._generateStoriesList()}
@@ -50,6 +57,10 @@ class SavedStoriesPage {
         `).join('')}
       </div>
     `;
+  }
+
+  cleanup() {
+    // Add cleanup if needed
   }
 }
 

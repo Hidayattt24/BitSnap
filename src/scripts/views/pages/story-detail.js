@@ -1,6 +1,7 @@
 import createDetailTemplate from "../template/detail-template.js";
 import MapHelper from "../../utils/location-util.js";
 import Database from "../../services/database.js";
+import Swal from "sweetalert2";
 
 class DetailPage {
   constructor({ story = null, isLoading = false, error = null, container }) {
