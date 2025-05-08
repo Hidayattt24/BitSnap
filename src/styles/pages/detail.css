@@ -103,11 +103,20 @@
   gap: var(--space-md);
   margin-top: var(--space-lg);
   margin-bottom: var(--space-lg);
+  flex-wrap: wrap; /* Added to handle multiple buttons */
 }
 
 .story-detail__action-buttons .button {
+  flex: 1;
+  min-width: 150px; /* Ensure buttons have minimum width */
+  max-width: 200px; /* Limit maximum width */
   position: relative;
   transition: all 0.3s ease;
+  opacity: 1;
+}
+
+.story-detail__action-buttons .button[style*="display: none"] {
+  opacity: 0;
 }
 
 .story-detail__action-buttons .button:disabled {
@@ -138,6 +147,15 @@
 
 .button--saved:hover {
   background-color: var(--success-dark-color);
+}
+
+.button--cancel {
+  background-color: var(--text-light);
+  color: var(--white);
+}
+
+.button--cancel:hover {
+  background-color: var(--text-color);
 }
 
 .saved-stories {

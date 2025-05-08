@@ -65,44 +65,76 @@ class DetailPage {
 
   async _initSaveButton() {
     const saveButton = document.getElementById('saveStoryButton');
+    const cancelButton = document.getElementById('cancelSaveButton');
     const removeButton = document.getElementById('removeStoryButton');
     
-    if (!saveButton || !removeButton) return;
+    if (!saveButton || !cancelButton || !removeButton) return;
 
     try {
       const isSaved = await Database.isStorySaved(this._story.id);
-      this._updateSaveButtonState(saveButton, removeButton, isSaved);
+      this._updateSaveButtonState(saveButton, cancelButton, removeButton, isSaved);
 
-      // Perbaikan untuk save button
+      // Save button handler
       saveButton.addEventListener('click', async (e) => {
-        e.preventDefault(); // Prevent default
-        e.stopPropagation(); // Stop event bubbling
+        e.preventDefault();
+        e.stopPropagation();
         
-        try {
-          saveButton.disabled = true; // Disable button while processing
-          
-          await Database.saveStory(this._story);
-          this._updateSaveButtonState(saveButton, removeButton, true);
-          
-          Swal.fire({
-            title: 'Saved!',
-            text: 'Story saved successfully',
-            icon: 'success',
-            timer: 2000,
-            showConfirmButton: false
-          });
-        } catch (error) {
-          Swal.fire({
-            title: 'Error',
-            text: error.message,
-            icon: 'error'
-          });
-        } finally {
-          saveButton.disabled = false; // Re-enable button
-        }
+        // Show cancel button first
+        saveButton.style.display = 'none';
+        cancelButton.style.display = 'block';
+        
+        // Only show confirmation if user hasn't clicked cancel
+        const confirmSave = async () => {
+          try {
+            const result = await Swal.fire({
+              title: 'Save Story',
+              text: 'Do you want to save this story?',
+              icon: 'question',
+              showCancelButton: true,
+              confirmButtonColor: '#28a745',
+              cancelButtonColor: '#6c757d',
+              confirmButtonText: 'Yes, save it!',
+              cancelButtonText: 'Cancel'
+            });
+
+            if (result.isConfirmed) {
+              await Database.saveStory(this._story);
+              this._updateSaveButtonState(saveButton, cancelButton, removeButton, true);
+              
+              Swal.fire({
+                title: 'Saved!',
+                text: 'Story saved successfully',
+                icon: 'success',
+                timer: 2000,
+                showConfirmButton: false
+              });
+            } else {
+              this._updateSaveButtonState(saveButton, cancelButton, removeButton, false);
+            }
+          } catch (error) {
+            console.error('Error saving story:', error);
+            Swal.fire({
+              title: 'Error',
+              text: error.message,
+              icon: 'error'
+            });
+            this._updateSaveButtonState(saveButton, cancelButton, removeButton, false);
+          }
+        };
+
+        confirmSave();
       });
 
-      // Perbaikan untuk remove button
+      // Cancel button handler
+      cancelButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Directly update UI state without any async operations
+        this._updateSaveButtonState(saveButton, cancelButton, removeButton, false);
+      });
+
+      // Remove button handler
       removeButton.addEventListener('click', async (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -119,10 +151,8 @@ class DetailPage {
           });
 
           if (result.isConfirmed) {
-            removeButton.disabled = true;
-            
             await Database.removeReport(this._story.id);
-            this._updateSaveButtonState(saveButton, removeButton, false);
+            this._updateSaveButtonState(saveButton, cancelButton, removeButton, false);
             
             Swal.fire({
               title: 'Removed!',
@@ -133,13 +163,12 @@ class DetailPage {
             });
           }
         } catch (error) {
+          console.error('Error removing story:', error);
           Swal.fire({
             title: 'Error',
             text: error.message,
             icon: 'error'
           });
-        } finally {
-          removeButton.disabled = false;
         }
       });
 
@@ -148,17 +177,19 @@ class DetailPage {
     }
   }
 
-  _updateSaveButtonState(saveButton, removeButton, isSaved) {
+  _updateSaveButtonState(saveButton, cancelButton, removeButton, isSaved) {
+    // Make sure all buttons exist before updating
+    if (!saveButton || !cancelButton || !removeButton) return;
+
     if (isSaved) {
       saveButton.style.display = 'none';
+      cancelButton.style.display = 'none';
       removeButton.style.display = 'block';
     } else {
       saveButton.style.display = 'block';
+      cancelButton.style.display = 'none';
       removeButton.style.display = 'none';
     }
-
-    // Tambahkan visual feedback
-    saveButton.classList.toggle('button--saved', isSaved);
   }
 
   _attachRetryHandler() {
