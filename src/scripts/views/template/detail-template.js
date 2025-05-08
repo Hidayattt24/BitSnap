@@ -86,6 +86,14 @@ const createDetailTemplate = ({
       `
       : "";
 
+  const saveButtonTemplate = `
+    <div class="story-detail__actions">
+      <button id="saveStoryButton" class="button">
+        <i class="fas fa-bookmark"></i> Save Story
+      </button>
+    </div>
+  `;
+
   return `
       <section class="detail">
         <div class="detail__header">
@@ -122,6 +130,7 @@ const createDetailTemplate = ({
               ${story.description}
             </div>
             
+            ${saveButtonTemplate}
             ${mapTemplate}
           </div>
         </article>

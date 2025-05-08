@@ -34,6 +34,28 @@ const Database = {
   async removeReport(id) {
     return (await dbPromise).delete(OBJECT_STORE_NAME, id);
   },
+
+  async saveStory(story) {
+    if (!story.id) {
+      throw new Error("Story ID is required");
+    }
+    
+    // Check if story already exists
+    const existingStory = await this.getReportById(story.id);
+    if (existingStory) {
+      throw new Error("Story already saved");
+    }
+
+    return (await dbPromise).put(OBJECT_STORE_NAME, story);
+  },
+
+  async isStorySaved(id) {
+    if (!id) {
+      throw new Error("Story ID is required");
+    }
+    const story = await this.getReportById(id);
+    return !!story;
+  },
 };
 
 export default Database;

@@ -5,6 +5,7 @@ import LoginPresenter from "../presenters/auth-login.js";
 import RegisterPresenter from "../presenters/auth-register.js";
 import SavedReportPresenter from "../presenters/saved-report.js";
 import AboutPage from "../views/pages/about-page.js";
+import SavedStoriesPage from "../views/pages/save-story.js";
 import { applyViewTransition } from "../utils/transition-util.js";
 import authRepository from "../services/user-session.js";
 import Swal from "sweetalert2";
@@ -17,6 +18,10 @@ const routes = {
   "/login": LoginPresenter,
   "/register": RegisterPresenter,
   "/saved-reports": SavedReportPresenter,
+  "/saved-stories": {
+    component: SavedStoriesPage,
+    requireAuth: true,
+  },
 };
 
 const knownFragments = ["mainContent", "pageContent"];
@@ -71,7 +76,7 @@ class Router {
           });
         }
 
-        page = presenter;
+        page = presenter.component || presenter;
         break;
       }
     }
@@ -81,7 +86,10 @@ class Router {
     }
 
     if (page) {
-      if (this._isProtectedRoute(hash) && !this._isAuthenticated()) {
+      if (
+        (this._isProtectedRoute(hash) || this._requiresAuth(hash)) &&
+        !this._isAuthenticated()
+      ) {
         Swal.fire({
           title: "Login Required",
           text: "Hi there 👋🏼 Please login to access this page",
@@ -141,6 +149,20 @@ class Router {
   _isProtectedRoute(route) {
     const protectedRoutes = ["/add", "/detail"];
     return protectedRoutes.some((r) => route.startsWith(r));
+  }
+
+  /**
+   * Check if route requires authentication based on route config
+   * @param {string} route - Route to check
+   * @returns {boolean} Whether route requires authentication
+   */
+  _requiresAuth(route) {
+    const routeConfig = Object.entries(this._routes).find(([pattern]) => {
+      const regex = this._convertRouteToRegex(pattern);
+      return regex.test(route);
+    });
+
+    return routeConfig && routeConfig[1].requireAuth;
   }
 
   /**
