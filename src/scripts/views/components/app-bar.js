@@ -58,6 +58,19 @@ class AppBar extends HTMLElement {
             </a>
           </li>
 
+          ${
+            this._isAuthenticated
+              ? `
+              <li class="app-nav__item">
+                <a href="#/saved" class="app-nav__link" data-link="saved">
+                  <i class="fas fa-bookmark"></i>
+                  <span>Saved Stories</span>
+                </a>
+              </li>
+              `
+              : ""
+          }
+
           <li class="app-nav__item">
             <a href="#/about" class="app-nav__link" data-link="about">
               <i class="fas fa-info-circle"></i>

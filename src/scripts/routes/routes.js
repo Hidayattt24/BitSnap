@@ -4,6 +4,8 @@ import AddStoryPresenter from "../presenters/story-upload.js";
 import LoginPresenter from "../presenters/auth-login.js";
 import RegisterPresenter from "../presenters/auth-register.js";
 import AboutPage from "../views/pages/about-page.js";
+import OfflinePage from "../views/pages/offline";
+import SavedPage from "../views/components/saved.js";
 import { applyViewTransition } from "../utils/transition-util.js";
 import authRepository from "../services/user-session.js";
 import Swal from "sweetalert2";
@@ -15,6 +17,8 @@ const routes = {
   "/add": AddStoryPresenter,
   "/login": LoginPresenter,
   "/register": RegisterPresenter,
+  "/offline": OfflinePage,
+  "/saved": SavedPage,
 };
 
 const knownFragments = ["mainContent", "pageContent"];

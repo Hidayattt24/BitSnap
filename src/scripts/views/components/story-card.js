@@ -1,3 +1,5 @@
+import SavedStoriesIdb from '../../utils/idb-helper.js';
+
 class StoryItem extends HTMLElement {
   /**
    * Set the story data to display
@@ -39,7 +41,7 @@ class StoryItem extends HTMLElement {
     return text.substring(0, maxLength) + "...";
   }
 
-  render() {
+  async render() {
     if (!this._story) {
       this.innerHTML =
         '<div class="story-item__error">No story data available</div>';
@@ -49,6 +51,7 @@ class StoryItem extends HTMLElement {
     const { id, name, description, photoUrl, createdAt, lat, lon } =
       this._story;
     const hasLocation = lat && lon && !isNaN(lat) && !isNaN(lon);
+    const isSaved = await SavedStoriesIdb.getStory(id);
 
     const tags = ["Tech", "Learning", "Project", "BitSnap"]
       .map(
@@ -107,6 +110,10 @@ class StoryItem extends HTMLElement {
             </div>
             
             <div class="story-item__actions">
+              <button class="story-item__save-btn" data-id="${id}">
+                <i class="fas ${isSaved ? 'fa-bookmark' : 'fa-bookmark-o'}"></i>
+                ${isSaved ? 'Saved' : 'Save'}
+              </button>
               <a href="#/detail/${id}" class="story-item__button">
                 Read More
                 <i class="fas fa-arrow-right"></i>
@@ -115,6 +122,26 @@ class StoryItem extends HTMLElement {
           </div>
         </article>
       `;
+
+    this._attachEventListeners();
+  }
+
+  _attachEventListeners() {
+    const saveButton = this.querySelector('.story-item__save-btn');
+    saveButton?.addEventListener('click', async (e) => {
+      const id = e.target.closest('.story-item__save-btn').dataset.id;
+      const isSaved = await SavedStoriesIdb.getStory(id);
+      
+      if (isSaved) {
+        await SavedStoriesIdb.deleteStory(id);
+        alert('Story removed from saved items');
+      } else {
+        await SavedStoriesIdb.saveStory(this._story);
+        alert('Story saved successfully');
+      }
+      
+      this.render();
+    });
   }
 }
 
