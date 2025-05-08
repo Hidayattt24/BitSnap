@@ -4,11 +4,21 @@ const urlsToCache = [
   "/index.html",
   "/assets/index.css",
   "/assets/index.js",
-  "/favicon.png",
+  "/icon/icon.svg",
   "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
 ];
+
+caches
+  .open(CACHE_NAME)
+  .then((cache) => {
+    console.log("Cache opened");
+    return cache.addAll(urlsToCache);
+  })
+  .catch((err) => {
+    console.error("Failed to cache assets:", err);
+  });
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

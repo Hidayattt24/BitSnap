@@ -1,3 +1,4 @@
+// vite.config.js
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
@@ -8,28 +9,37 @@ export default defineConfig({
       registerType: "autoUpdate",
       filename: "sw.js",
       manifestFilename: "manifest.webmanifest",
-      includeAssets: ["favicon.ico", "robots.txt", "apple-touch-icon.png"],
+      includeAssets: [
+        "favicon.ico",
+        "robots.txt",
+        "apple-touch-icon.png",
+        "icon/icon.svg",
+      ],
       manifest: {
         name: "BitSnap",
         short_name: "BitSnap",
         description:
-          "BitSnap is a visual storytelling and location sharing platform for learners in the Dicoding community. Similar to Instagram but specifically for moments around learning, projects, events, and other interesting experiences in the tech world.",
+          "BitSnap is a visual storytelling and location sharing platform for learners in the Dicoding community.",
         theme_color: "#F6F6F6",
+        background_color: "#F6F6F6",
+        display: "standalone",
+        start_url: "/",
+        scope: "/",
         icons: [
           {
-            src: "/src/public/favicon.png",
+            src: "/icon/icon.svg",
             sizes: "192x192",
-            type: "image/png",
+            type: "image/svg+xml",
           },
           {
-            src: "/src/public/favicon.png",
+            src: "/icon/icon.svg",
             sizes: "512x512",
-            type: "image/png",
+            type: "image/svg+xml",
           },
           {
-            src: "/src/public/favicon.png",
+            src: "/icon/icon.svg",
             sizes: "512x512",
-            type: "image/png",
+            type: "image/svg+xml",
             purpose: "any maskable",
           },
         ],
