@@ -103,21 +103,33 @@ class Router {
 
       try {
         await applyViewTransition(async () => {
-          this._currentPage = new page(params);
+          const pageContainer = document.querySelector("#pageContent");
+          if (!pageContainer) {
+            throw new Error("Page container not found");
+          }
+
+          this._currentPage = new page({
+            container: pageContainer,
+            ...params
+          });
+          
           await this._currentPage.init();
         });
       } catch (error) {
         console.error("Failed to load page:", error);
-        document.querySelector("#pageContent").innerHTML = `
-          <div class="error-container">
-            <i class="fas fa-exclamation-circle error-icon"></i>
-            <h2>Oops! Something went wrong</h2>
-            <p class="error-message">${error.message}</p>
-            <button class="button" onclick="window.location.reload()">
-              <i class="fas fa-redo"></i> Try Again
-            </button>
-          </div>
-        `;
+        const pageContent = document.querySelector("#pageContent");
+        if (pageContent) {
+          pageContent.innerHTML = `
+            <div class="error-container">
+              <i class="fas fa-exclamation-circle error-icon"></i>
+              <h2>Oops! Something went wrong</h2>
+              <p class="error-message">${error.message}</p>
+              <button class="button" onclick="window.location.reload()">
+                <i class="fas fa-redo"></i> Try Again
+              </button>
+            </div>
+          `;
+        }
       }
     } else {
       document.querySelector("#pageContent").innerHTML = `

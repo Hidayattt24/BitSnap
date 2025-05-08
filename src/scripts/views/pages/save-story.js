@@ -1,8 +1,8 @@
 import Database from "../../services/database.js";
 
 class SavedStoriesPage {
-  constructor({ container }) {
-    this._container = container;
+  constructor(params = {}) {
+    this._container = document.querySelector('#pageContent'); // Get container directly
     this._stories = [];
   }
 
@@ -11,20 +11,44 @@ class SavedStoriesPage {
   }
 
   async render() {
-    this._stories = await Database.getAllReports();
-    
-    this._container.innerHTML = `
-      <section class="saved-stories">
-        <div class="saved-stories__header">
-          <h2 class="saved-stories__title">Saved Stories</h2>
-          <a href="#/" class="button secondary">
-            <i class="fas fa-arrow-left"></i> Back to Home
-          </a>
+    try {
+      this._stories = await Database.getAllReports();
+      
+      if (!this._container) {
+        throw new Error('Container element not found');
+      }
+
+      this._container.innerHTML = `
+        <section class="saved-stories">
+          <div class="saved-stories__header">
+            <h2 class="saved-stories__title">Saved Stories</h2>
+            <a href="#/" class="button secondary">
+              <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+          </div>
+          
+          ${this._generateStoriesList()}
+        </section>
+      `;
+    } catch (error) {
+      console.error('Error rendering saved stories:', error);
+      this._renderError(error.message);
+    }
+  }
+
+  _renderError(message) {
+    if (this._container) {
+      this._container.innerHTML = `
+        <div class="error-container">
+          <i class="fas fa-exclamation-circle error-icon"></i>
+          <h2>Error Loading Saved Stories</h2>
+          <p class="error-message">${message}</p>
+          <button class="button" onclick="window.location.reload()">
+            <i class="fas fa-redo"></i> Try Again
+          </button>
         </div>
-        
-        ${this._generateStoriesList()}
-      </section>
-    `;
+      `;
+    }
   }
 
   _generateStoriesList() {
@@ -60,7 +84,10 @@ class SavedStoriesPage {
   }
 
   cleanup() {
-    // Add cleanup if needed
+    this._stories = [];
+    if (this._container) {
+      this._container.innerHTML = '';
+    }
   }
 }
 

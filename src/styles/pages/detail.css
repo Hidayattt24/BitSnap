@@ -130,6 +130,28 @@
   margin-bottom: var(--space-md);
 }
 
+/* Error styles */
+.error-container {
+  text-align: center;
+  padding: var(--space-xl);
+  background-color: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: var(--space-xl) auto;
+  max-width: 600px;
+}
+
+.error-icon {
+  font-size: 48px;
+  color: var(--danger-color);
+  margin-bottom: var(--space-md);
+}
+
+.error-message {
+  color: var(--text-color);
+  margin-bottom: var(--space-lg);
+}
+
 @media screen and (max-width: 768px) {
   .detail__header {
     flex-direction: column;
