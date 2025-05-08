@@ -70,24 +70,35 @@ class DetailPage {
     try {
       const isSaved = await Database.isStorySaved(this._story.id);
       
-      if (isSaved) {
-        saveButton.innerHTML = '<i class="fas fa-bookmark"></i> Saved';
-        saveButton.classList.add('button--saved');
-      }
+      this._updateSaveButtonState(saveButton, isSaved);
 
       saveButton.addEventListener('click', async () => {
         try {
-          await Database.saveStory(this._story);
-          saveButton.innerHTML = '<i class="fas fa-bookmark"></i> Saved';
-          saveButton.classList.add('button--saved');
-          
-          Swal.fire({
-            title: 'Success!',
-            text: 'Story saved successfully',
-            icon: 'success',
-            timer: 2000,
-            showConfirmButton: false
-          });
+          if (isSaved) {
+            // Remove story from saved
+            await Database.removeReport(this._story.id);
+            this._updateSaveButtonState(saveButton, false);
+            
+            Swal.fire({
+              title: 'Removed!',
+              text: 'Story removed from saved stories',
+              icon: 'success',
+              timer: 2000,
+              showConfirmButton: false
+            });
+          } else {
+            // Save story
+            await Database.saveStory(this._story);
+            this._updateSaveButtonState(saveButton, true);
+            
+            Swal.fire({
+              title: 'Saved!',
+              text: 'Story saved successfully',
+              icon: 'success',
+              timer: 2000,
+              showConfirmButton: false
+            });
+          }
         } catch (error) {
           Swal.fire({
             title: 'Error',
@@ -98,6 +109,16 @@ class DetailPage {
       });
     } catch (error) {
       console.error('Error checking saved status:', error);
+    }
+  }
+
+  _updateSaveButtonState(button, isSaved) {
+    if (isSaved) {
+      button.innerHTML = '<i class="fas fa-bookmark"></i> Remove from Saved';
+      button.classList.add('button--saved');
+    } else {
+      button.innerHTML = '<i class="far fa-bookmark"></i> Save Story';
+      button.classList.remove('button--saved');
     }
   }
 

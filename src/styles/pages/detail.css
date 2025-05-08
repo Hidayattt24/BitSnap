@@ -99,7 +99,11 @@
 }
 
 .button--saved {
-  background-color: var(--success-color);
+  background-color: var(--danger-color);
+}
+
+.button--saved:hover {
+  background-color: var(--danger-dark-color);
 }
 
 .saved-stories {
@@ -150,6 +154,35 @@
 .error-message {
   color: var(--text-color);
   margin-bottom: var(--space-lg);
+}
+
+.story-item__image-container {
+  position: relative;
+}
+
+.story-item__remove-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.story-item__remove-btn:hover {
+  background: var(--danger-color);
+  color: white;
+}
+
+.story-item__remove-btn i {
+  font-size: 16px;
 }
 
 @media screen and (max-width: 768px) {
