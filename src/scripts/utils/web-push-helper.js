@@ -14,19 +14,20 @@ class WebPushHelper {
    */
   async init() {
     if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
-      console.warn("Push notifications are not supported in this browser");
+      console.warn("Push notifications are not supported");
       return false;
     }
 
     try {
-      this._swRegistration = await navigator.serviceWorker.ready;
-      console.log("Service worker registered successfully");
+      // Register service worker explicitly
+      const registration = await navigator.serviceWorker.register('/sw-handler.js');
+      this._swRegistration = registration;
+      console.log('Service Worker registered with scope:', registration.scope);
 
       this._isSubscribed = await this._checkSubscription();
-
       return true;
     } catch (error) {
-      console.error("Service worker registration failed:", error);
+      console.error("Service Worker registration failed:", error);
       return false;
     }
   }
@@ -37,10 +38,17 @@ class WebPushHelper {
    */
   async subscribe() {
     if (!this._swRegistration) {
-      throw new Error("Service worker not registered. Call init() first.");
+      throw new Error('Service worker not registered. Call init() first.');
     }
 
     try {
+      // Request notification permission first
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') {
+        throw new Error('Notification permission denied');
+      }
+
+      // Subscribe to push
       const subscription = await this._swRegistration.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: this._urlBase64ToUint8Array(
@@ -50,29 +58,21 @@ class WebPushHelper {
 
       const subscriptionData = this._formatSubscriptionForApi(subscription);
 
+      // Send subscription to server
       await storyRepository.subscribeToPushNotifications(subscriptionData);
-
+      
       this._isSubscribed = true;
-      console.log("User is subscribed to push notifications");
-
+      
       Swal.fire({
-        title: "Notifikasi Aktif!",
-        text: "Anda akan menerima notifikasi saat ada story baru.",
-        icon: "success",
-        confirmButtonColor: "#EB4231",
+        title: 'Notifikasi Aktif!',
+        text: 'Anda akan menerima notifikasi saat ada story baru.',
+        icon: 'success',
+        confirmButtonColor: '#EB4231',
       });
 
       return subscriptionData;
     } catch (error) {
-      console.error("Failed to subscribe to push notifications:", error);
-
-      Swal.fire({
-        title: "Gagal Aktivasi Notifikasi",
-        text: error.message,
-        icon: "error",
-        confirmButtonColor: "#EB4231",
-      });
-
+      console.error('Failed to subscribe:', error);
       throw error;
     }
   }
@@ -83,46 +83,28 @@ class WebPushHelper {
    */
   async unsubscribe() {
     if (!this._swRegistration) {
-      throw new Error("Service worker not registered. Call init() first.");
+      throw new Error('Service worker not registered');
     }
 
     try {
-      const subscription =
-        await this._swRegistration.pushManager.getSubscription();
-
+      const subscription = await this._swRegistration.pushManager.getSubscription();
+      
       if (!subscription) {
-        console.log("No subscription to unsubscribe from");
         return true;
       }
 
+      // Unsubscribe locally
       await subscription.unsubscribe();
 
-      await storyRepository.unsubscribeFromPushNotifications(
-        subscription.endpoint
-      );
-
+      // Unsubscribe from server
+      await storyRepository.unsubscribeFromPushNotifications(subscription.endpoint);
+      
       this._isSubscribed = false;
-      console.log("User unsubscribed from push notifications");
-
-      Swal.fire({
-        title: "Notifikasi Dinonaktifkan",
-        text: "Anda tidak akan menerima notifikasi lagi.",
-        icon: "info",
-        confirmButtonColor: "#EB4231",
-      });
 
       return true;
     } catch (error) {
-      console.error("Failed to unsubscribe from push notifications:", error);
-
-      Swal.fire({
-        title: "Gagal Menonaktifkan Notifikasi",
-        text: error.message,
-        icon: "error",
-        confirmButtonColor: "#EB4231",
-      });
-
-      return false;
+      console.error('Error unsubscribing:', error);
+      throw error;
     }
   }
 

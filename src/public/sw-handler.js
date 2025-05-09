@@ -61,31 +61,40 @@ self.addEventListener("fetch", (event) => {
   );
 });
 
-self.addEventListener("push", (event) => {
+self.addEventListener('push', (event) => {
   let notificationData = {};
 
   try {
     notificationData = event.data.json();
   } catch (error) {
     notificationData = {
-      title: "New Notification",
+      title: 'BitSnap Story',
       options: {
-        body: event.data ? event.data.text() : "No content",
-        icon: "/favicon.ico",
-      },
+        body: event.data ? event.data.text() : 'Ada story baru untuk Anda!',
+        icon: '/icon/icon-192x192.png',
+        badge: '/icon/icon-72x72.png',
+        vibrate: [200, 100, 200],
+        tag: 'story-notification',
+        renotify: true,
+        data: {
+          url: '/#/'
+        }
+      }
     };
   }
 
-  const title = notificationData.title || "Dicoding Story";
-  const options = notificationData.options || {};
+  const title = notificationData.title;
+  const options = notificationData.options;
 
-  event.waitUntil(self.registration.showNotification(title, options));
+  event.waitUntil(
+    self.registration.showNotification(title, options)
+  );
 });
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-
-  const urlToOpen = "/#/";
+  
+  const urlToOpen = event.notification.data?.url || "/#/";
 
   event.waitUntil(
     clients.matchAll({ type: "window" }).then((clientList) => {
@@ -94,7 +103,6 @@ self.addEventListener("notificationclick", (event) => {
           return client.focus();
         }
       }
-
       if (clients.openWindow) {
         return clients.openWindow(urlToOpen);
       }

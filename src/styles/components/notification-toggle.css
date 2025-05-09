@@ -2,25 +2,32 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: var(--white);
-  border: 2px solid var(--primary-color);
-  color: var(--primary-color);
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: none;
   border-radius: var(--radius-md);
+  color: var(--text-color);
+  font-size: var(--font-medium);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .notification-toggle:hover {
-  background: var(--primary-color);
-  color: var(--white);
+  background-color: rgba(235, 66, 49, 0.1);
+  color: var(--primary-color);
 }
 
 .notification-toggle.active {
-  background: var(--primary-color);
-  color: var(--white);
+  color: var(--primary-color);
 }
 
 .notification-toggle i {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
+}
+
+@media screen and (max-width: 768px) {
+  .notification-toggle {
+    width: 100%;
+    justify-content: center;
+  }
 }

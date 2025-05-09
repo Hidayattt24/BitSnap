@@ -112,10 +112,23 @@ class AddStoryPresenter {
   async _triggerPushNotification(description) {
     try {
       if (webPushHelper.isSubscribed()) {
-        console.log("Push notification may be sent by the server");
+        const notificationData = {
+          title: 'Story berhasil dibuat',
+          options: {
+            body: `Anda telah membuat story baru dengan deskripsi: ${description.substring(0, 50)}...`,
+            icon: '/icon/icon-192x192.png',
+            badge: '/icon/icon-72x72.png',
+            vibrate: [200, 100, 200],
+            tag: 'new-story',
+            renotify: true
+          }
+        };
+
+        // Notification will be triggered from server
+        console.log('Story created, server will send push notification');
       }
     } catch (error) {
-      console.error("Failed to handle push notification:", error);
+      console.error('Failed to handle push notification:', error);
     }
   }
 
