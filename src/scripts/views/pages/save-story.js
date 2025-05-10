@@ -149,7 +149,7 @@ class SavedStoriesPage {
             "error"
           );
         }
-      });
+      }); 
     });
   }
 
