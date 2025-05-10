@@ -35,6 +35,51 @@ export default defineConfig({
         start_url: "/",
         display: "standalone",
         background_color: "#ffffff",
+        shortcuts: [
+          {
+            name: "Tambah Story Baru",
+            short_name: "Tambah Story",
+            description: "Tambah story baru di BitSnap",
+            url: "/add",
+            icons: [
+              {
+                src: "/icons/add-story-96x96.png",
+                sizes: "96x96",
+                type: "image/png"
+              }
+            ]
+          }
+        ],
+        screenshots: [
+          {
+            src: "/screenshots/desktop-home.png",
+            sizes: "1280x720",
+            type: "image/png",
+            form_factor: "wide",
+            label: "Homescreen BitSnap Desktop"
+          },
+          {
+            src: "/screenshots/desktop-story.png",
+            sizes: "1280x720",
+            type: "image/png",
+            form_factor: "wide",
+            label: "Story Detail BitSnap Desktop"
+          },
+          {
+            src: "/screenshots/mobile-home.png",
+            sizes: "390x844",
+            type: "image/png",
+            form_factor: "narrow",
+            label: "Homescreen BitSnap Mobile"
+          },
+          {
+            src: "/screenshots/mobile-story.png",
+            sizes: "390x844",
+            type: "image/png",
+            form_factor: "narrow",
+            label: "Story Detail BitSnap Mobile"
+          }
+        ]
       },
       injectManifest: {
         swSrc: "./sw-handler.js",
