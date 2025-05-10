@@ -5,16 +5,11 @@ import { VitePWA } from "vite-plugin-pwa";
 export default defineConfig({
   plugins: [
     VitePWA({
-      strategies: "generateSW",
+      strategies: "injectManifest",
       registerType: "autoUpdate",
       filename: "sw.js",
       manifestFilename: "manifest.webmanifest",
-      includeAssets: [
-        "favicon.ico",
-        "robots.txt",
-        "apple-touch-icon.png",
-        "icon/icon.svg",
-      ],
+      includeAssets: ["favicon.ico", "robots.txt", "apple-touch-icon.png"],
       manifest: {
         name: "BitSnap",
         short_name: "BitSnap",
@@ -27,60 +22,95 @@ export default defineConfig({
         scope: "/",
         icons: [
           {
-            src: "/icon/icon.svg",
+            src: "/src/public/favicon.png",
             sizes: "192x192",
             type: "image/svg+xml",
           },
           {
-            src: "/icon/icon.svg",
+            src: "/src/public/favicon.png",
             sizes: "512x512",
             type: "image/svg+xml",
           },
           {
-            src: "/icon/icon.svg",
+            src: "/src/public/favicon.png",
             sizes: "512x512",
             type: "image/svg+xml",
             purpose: "any maskable",
           },
         ],
-      },
-      workbox: {
-        runtimeCaching: [
+        start_url: "/",
+        display: "standalone",
+        background_color: "#ffffff",
+        shortcuts: [
           {
-            urlPattern: /^https:\/\/story-api\.dicoding\.dev\/.*$/,
-            handler: "NetworkFirst",
-            options: {
-              cacheName: "api-cache",
-              expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24,
-              },
-              networkTimeoutSeconds: 10,
-            },
-          },
-          {
-            urlPattern: /^https:\/\/unpkg\.com\/.*/i,
-            handler: "StaleWhileRevalidate",
-            options: {
-              cacheName: "libs-cache",
-            },
-          },
-          {
-            urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
-            handler: "StaleWhileRevalidate",
-            options: {
-              cacheName: "images-cache",
-            },
-          },
+            name: "Tambah Story Baru",
+            short_name: "Tambah Story",
+            description: "Tambah story baru di BitSnap",
+            url: "/add",
+            icons: [
+              {
+                src: "/icons/add-story-96x96.png",
+                sizes: "96x96",
+                type: "image/png"
+              }
+            ]
+          }
         ],
+        screenshots: [
+          {
+            src: "/screenshots/desktop-home.png",
+            sizes: "1280x720",
+            type: "image/png",
+            form_factor: "wide",
+            label: "Homescreen BitSnap Desktop"
+          },
+          {
+            src: "/screenshots/desktop-story.png",
+            sizes: "1280x720",
+            type: "image/png",
+            form_factor: "wide",
+            label: "Story Detail BitSnap Desktop"
+          },
+          {
+            src: "/screenshots/mobile-home.png",
+            sizes: "390x844",
+            type: "image/png",
+            form_factor: "narrow",
+            label: "Homescreen BitSnap Mobile"
+          },
+          {
+            src: "/screenshots/mobile-story.png",
+            sizes: "390x844",
+            type: "image/png",
+            form_factor: "narrow",
+            label: "Story Detail BitSnap Mobile"
+          }
+        ]
+      },
+      injectManifest: {
+        swSrc: "./sw-handler.js",
+        swDest: "dist/sw-handler.js",
+        injectionPoint: undefined,
+      },
+      devOptions: {
+        enabled: true,
+        type: "module",
       },
     }),
   ],
   server: {
     port: 3000,
+    host: true,
     headers: {
       "Service-Worker-Allowed": "/",
     },
+    hmr: {
+      protocol: 'ws',
+      host: 'localhost',
+      port: 3000,
+      timeout: 30000,
+      overlay: true
+    }
   },
   build: {
     outDir: "dist",

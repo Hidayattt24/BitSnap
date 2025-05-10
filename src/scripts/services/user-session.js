@@ -1,4 +1,4 @@
-import api from "./client.js";
+import api from "./api.js";
 import API_CONFIG from "../config/endpoint.js";
 
 class AuthRepository {

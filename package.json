@@ -16,6 +16,7 @@
   "dependencies": {
     "@fontsource/inter": "^5.0.15",
     "axios": "^1.6.2",
+    "idb": "^8.0.3",
     "leaflet": "^1.9.4",
     "sweetalert2": "^11.6.13",
     "workbox-window": "^7.0.0"

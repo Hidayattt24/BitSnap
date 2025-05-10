@@ -3,7 +3,9 @@ import DetailPresenter from "../presenters/story-detail.js";
 import AddStoryPresenter from "../presenters/story-upload.js";
 import LoginPresenter from "../presenters/auth-login.js";
 import RegisterPresenter from "../presenters/auth-register.js";
+import SavedReportPresenter from "../presenters/saved-report.js";
 import AboutPage from "../views/pages/about-page.js";
+import SavedStoriesPage from "../views/pages/save-story.js";
 import { applyViewTransition } from "../utils/transition-util.js";
 import authRepository from "../services/user-session.js";
 import Swal from "sweetalert2";
@@ -15,6 +17,11 @@ const routes = {
   "/add": AddStoryPresenter,
   "/login": LoginPresenter,
   "/register": RegisterPresenter,
+  "/saved-reports": SavedReportPresenter,
+  "/saved-stories": {
+    component: SavedStoriesPage,
+    requireAuth: true,
+  },
 };
 
 const knownFragments = ["mainContent", "pageContent"];
@@ -69,7 +76,7 @@ class Router {
           });
         }
 
-        page = presenter;
+        page = presenter.component || presenter;
         break;
       }
     }
@@ -79,11 +86,14 @@ class Router {
     }
 
     if (page) {
-      if (this._isProtectedRoute(hash) && !this._isAuthenticated()) {
+      if (
+        (this._isProtectedRoute(hash) || this._requiresAuth(hash)) &&
+        !this._isAuthenticated()
+      ) {
         Swal.fire({
           title: "Login Required",
           text: "Hi there 👋🏼 Please login to access this page",
-          icon: "info",
+          icon: "warning",
           confirmButtonColor: "#EB4231",
         }).then(() => {
           this.navigate("/login");
@@ -93,21 +103,33 @@ class Router {
 
       try {
         await applyViewTransition(async () => {
-          this._currentPage = new page(params);
+          const pageContainer = document.querySelector("#pageContent");
+          if (!pageContainer) {
+            throw new Error("Page container not found");
+          }
+
+          this._currentPage = new page({
+            container: pageContainer,
+            ...params
+          });
+          
           await this._currentPage.init();
         });
       } catch (error) {
         console.error("Failed to load page:", error);
-        document.querySelector("#pageContent").innerHTML = `
-          <div class="error-container">
-            <i class="fas fa-exclamation-circle error-icon"></i>
-            <h2>Oops! Something went wrong</h2>
-            <p class="error-message">${error.message}</p>
-            <button class="button" onclick="window.location.reload()">
-              <i class="fas fa-redo"></i> Try Again
-            </button>
-          </div>
-        `;
+        const pageContent = document.querySelector("#pageContent");
+        if (pageContent) {
+          pageContent.innerHTML = `
+            <div class="error-container">
+              <i class="fas fa-exclamation-circle error-icon"></i>
+              <h2>Oops! Something went wrong</h2>
+              <p class="error-message">${error.message}</p>
+              <button class="button" onclick="window.location.reload()">
+                <i class="fas fa-redo"></i> Try Again
+              </button>
+            </div>
+          `;
+        }
       }
     } else {
       document.querySelector("#pageContent").innerHTML = `
@@ -116,7 +138,7 @@ class Router {
           <h2>Page Not Found</h2>
           <p class="error-message">The page you're looking for doesn't exist.</p>
           <button class="button" onclick="window.location.hash = '#'">
-            <i class="fas fa-home"></i> Go to Homepage
+            <i class="fas fa-compass"></i> Go to Explore
           </button>
         </div>
       `;
@@ -139,6 +161,20 @@ class Router {
   _isProtectedRoute(route) {
     const protectedRoutes = ["/add", "/detail"];
     return protectedRoutes.some((r) => route.startsWith(r));
+  }
+
+  /**
+   * Check if route requires authentication based on route config
+   * @param {string} route - Route to check
+   * @returns {boolean} Whether route requires authentication
+   */
+  _requiresAuth(route) {
+    const routeConfig = Object.entries(this._routes).find(([pattern]) => {
+      const regex = this._convertRouteToRegex(pattern);
+      return regex.test(route);
+    });
+
+    return routeConfig && routeConfig[1].requireAuth;
   }
 
   /**

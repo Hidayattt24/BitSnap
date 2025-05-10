@@ -1,5 +1,5 @@
 import "./views/components/app-bar.js";
-// import "./views/components/notification-toggle.js";
+import "./views/components/notification-toggle.js"; 
 import Router from "./routes/routes.js";
 
 document.addEventListener("DOMContentLoaded", () => {

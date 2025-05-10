@@ -10,6 +10,16 @@ class NotificationToggle extends HTMLElement {
     await this._initialize();
     this.render();
     this._attachEventListeners();
+
+    // Listen for subscription changes
+    window.addEventListener('subscription-changed', (event) => {
+      this._isSubscribed = event.detail.isSubscribed;
+      this.render();
+    });
+  }
+
+  disconnectedCallback() {
+    window.removeEventListener('subscription-changed', this._handleSubscriptionChange);
   }
 
   async _initialize() {
@@ -35,11 +45,16 @@ class NotificationToggle extends HTMLElement {
       try {
         if (this._isSubscribed) {
           await webPushHelper.unsubscribe();
+          this._isSubscribed = false; // Update state setelah unsubscribe
         } else {
           await webPushHelper.requestPermission();
+          // Tunggu sebentar untuk memastikan proses subscribe selesai
+          setTimeout(async () => {
+            this._isSubscribed = webPushHelper.isSubscribed();
+            this.render(); // Render ulang komponen
+          }, 1000);
         }
-        this._isSubscribed = webPushHelper.isSubscribed();
-        this.render();
+        this.render(); // Render ulang komponen
       } catch (error) {
         console.error("Gagal mengubah status notifikasi:", error);
       }

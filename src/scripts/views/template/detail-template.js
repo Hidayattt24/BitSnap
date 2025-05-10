@@ -86,6 +86,22 @@ const createDetailTemplate = ({
       `
       : "";
 
+  const saveButtonTemplate = `
+    <div class="story-detail__actions">
+      <div class="story-detail__action-buttons">
+        <button id="saveStoryButton" class="button">
+          <i class="far fa-bookmark"></i> Save Story
+        </button>
+        <button id="cancelSaveButton" class="button button--cancel" style="display: none;">
+          <i class="fas fa-times"></i> Cancel Save
+        </button>
+        <button id="removeStoryButton" class="button button--danger" style="display: none;">
+          <i class="fas fa-trash"></i> Remove from Saved
+        </button>
+      </div>
+    </div>
+  `;
+
   return `
       <section class="detail">
         <div class="detail__header">
@@ -122,6 +138,7 @@ const createDetailTemplate = ({
               ${story.description}
             </div>
             
+            ${saveButtonTemplate}
             ${mapTemplate}
           </div>
         </article>
