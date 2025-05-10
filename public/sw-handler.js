@@ -71,14 +71,9 @@ self.addEventListener('push', (event) => {
       title: 'BitSnap Story',
       options: {
         body: event.data ? event.data.text() : 'Ada story baru untuk Anda!',
-        icon: '/icon/icon-192x192.png',
-        badge: '/icon/icon-72x72.png',
-        vibrate: [200, 100, 200],
-        tag: 'story-notification',
-        renotify: true,
-        data: {
-          url: '/#/'
-        }
+        icon: '/favicon.png',
+        badge: '/favicon.png',
+        vibrate: [200, 100, 200]
       }
     };
   }
