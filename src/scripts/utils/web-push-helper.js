@@ -63,6 +63,11 @@ class WebPushHelper {
       
       this._isSubscribed = true;
       
+      // Dispatch custom event
+      window.dispatchEvent(new CustomEvent('subscription-changed', {
+        detail: { isSubscribed: true }
+      }));
+
       Swal.fire({
         title: 'Notifikasi Aktif!',
         text: 'Anda akan menerima notifikasi saat ada story baru.',

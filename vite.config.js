@@ -4,11 +4,10 @@ import { VitePWA } from "vite-plugin-pwa";
 export default defineConfig({
   plugins: [
     VitePWA({
-      strategies: "generateSW",
+      strategies: "injectManifest",
       registerType: "autoUpdate",
-      filename: "sw.js",
-      manifestFilename: "manifest.webmanifest",
-      includeAssets: ["favicon.ico", "robots.txt", "apple-touch-icon.png"],
+      injectRegister: "auto",
+      filename: "sw-handler.js",
       manifest: {
         name: "BitSnap",
         short_name: "BitSnap",
@@ -17,60 +16,50 @@ export default defineConfig({
         theme_color: "#F6F6F6",
         icons: [
           {
-            src: "/src/public/favicon.png",
+            src: "./favicon.png",
             sizes: "192x192",
             type: "image/png",
           },
           {
-            src: "/src/public/favicon.png",
+            src: "./favicon.png",
             sizes: "512x512",
             type: "image/png",
           },
           {
-            src: "/src/public/favicon.png",
+            src: "./favicon.png",
             sizes: "512x512",
             type: "image/png",
             purpose: "any maskable",
           },
         ],
+        start_url: "/",
+        display: "standalone",
+        background_color: "#ffffff",
       },
-      workbox: {
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/story-api\.dicoding\.dev\/.*$/,
-            handler: "NetworkFirst",
-            options: {
-              cacheName: "api-cache",
-              expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24,
-              },
-              networkTimeoutSeconds: 10,
-            },
-          },
-          {
-            urlPattern: /^https:\/\/unpkg\.com\/.*/i,
-            handler: "StaleWhileRevalidate",
-            options: {
-              cacheName: "libs-cache",
-            },
-          },
-          {
-            urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
-            handler: "StaleWhileRevalidate",
-            options: {
-              cacheName: "images-cache",
-            },
-          },
-        ],
+      injectManifest: {
+        swSrc: "./sw-handler.js",
+        swDest: "dist/sw-handler.js",
+        injectionPoint: undefined,
+      },
+      devOptions: {
+        enabled: true,
+        type: "module",
       },
     }),
   ],
   server: {
     port: 3000,
+    host: true,
     headers: {
       "Service-Worker-Allowed": "/",
     },
+    hmr: {
+      protocol: 'ws',
+      host: 'localhost',
+      port: 3000,
+      timeout: 30000,
+      overlay: true
+    }
   },
   build: {
     outDir: "dist",
