@@ -52,3 +52,23 @@ Membangun offline capability menjadi tantangan tersendiri jika menyusun logika s
 
 Kriteria Opsional 3: Menyediakan Halaman Not Found
 Tidak menutup kemungkinan pengguna mengakses alamat dengan tujuan yang tidak dikenali oleh aplikasi. Nah, Anda dapat menambahkan dan menampilkan halaman Not Found dalam kasus ini sehingga pengguna memahami bahwa mereka mengakses alamat yang tak dikenal.
+
+/* ...kode lainnya disembunyikan... */
+ 
+export function isServiceWorkerAvailable() {
+  return 'serviceWorker' in navigator;
+}
+ 
+export async function registerServiceWorker() {
+  if (!isServiceWorkerAvailable()) {
+    console.log('Service Worker API unsupported');
+    return;
+  }
+ 
+  try {
+    const registration = await navigator.serviceWorker.register('/sw.js');
+    console.log('Service worker telah terpasang', registration);
+  } catch (error) {
+    console.log('Failed to install service worker:', error);
+  }
+}
