@@ -1,14 +1,13 @@
+// auth-login.js
 import LoginPage from "../views/pages/sign-in.js";
 import authRepository from "../services/user-session.js";
 import webPushHelper from "../utils/web-push-helper.js";
 import { applyCustomAnimation } from "../utils/transition-util.js";
-import Swal from "sweetalert2";
 
 class LoginPresenter {
   constructor(params = {}) {
     this._params = params;
     this._view = null;
-    this._container = document.querySelector("#pageContent");
     this._error = null;
     this._isLoading = false;
 
@@ -29,95 +28,55 @@ class LoginPresenter {
     this._renderView();
   }
 
-  /**
-   * Render the view with current state
-   */
   _renderView() {
     this._view = new LoginPage({
       error: this._error,
       isLoading: this._isLoading,
-      container: this._container,
     });
 
     this._view.render();
     this._view.setLoginHandler(this._handleLogin);
   }
 
-  /**
-   * Handle login form submission
-   * @param {Object} credentials - Login credentials
-   */
   async _handleLogin(credentials) {
-    if (this._isLoading) {
-      return;
-    }
+    if (this._isLoading) return;
+
+    this._isLoading = true;
+    this._error = null;
+    this._view.setLoading(true);
 
     try {
-      this._isLoading = true;
-
-      if (this._view) {
-        this._view.setLoading(true);
-      }
-
       await authRepository.login(credentials);
 
-      const Toast = Swal.mixin({
-        toast: true,
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener("mouseenter", Swal.stopTimer);
-          toast.addEventListener("mouseleave", Swal.resumeTimer);
-        },
+      // Delegasi ke View untuk menampilkan sukses
+      this._view.showLoginSuccess(() => {
+        this._initializeWebPush();
+        window.location.hash = "#/";
       });
-
-      Toast.fire({
-        icon: "success",
-        title: "Login berhasil",
-      });
-
-      this._initializeWebPush();
-
-      window.location.hash = "#/";
     } catch (error) {
       console.error("Login failed:", error);
-
       this._error =
-        error.message ||
-        "Login failed. Please check your credentials and try again.";
-      this._isLoading = false;
+        error?.message || "Login gagal. Periksa kredensial Anda dan coba lagi.";
       this._renderView();
     } finally {
       this._isLoading = false;
-
-      if (this._view) {
-        this._view.setLoading(false);
-      }
+      this._view.setLoading(false);
     }
   }
 
   async _initializeWebPush() {
     try {
-      const isPushSupported = await webPushHelper.init();
-
-      if (isPushSupported) {
-        const permission = Notification.permission;
-
-        if (permission === "default") {
+      const isSupported = await webPushHelper.init();
+      if (isSupported) {
+        if (Notification.permission === "default") {
           await webPushHelper.requestPermission();
         }
-
-        if (
-          Notification.permission === "granted" &&
-          !webPushHelper.isSubscribed()
-        ) {
+        if (Notification.permission === "granted" && !webPushHelper.isSubscribed()) {
           await webPushHelper.subscribe();
         }
       }
     } catch (error) {
-      console.error("Failed to initialize push notifications:", error);
+      console.warn("Push notification init failed:", error);
     }
   }
 

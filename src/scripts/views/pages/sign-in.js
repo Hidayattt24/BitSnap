@@ -1,11 +1,13 @@
+// sign-in.js
 import createLoginTemplate from "../template/login-template.js";
+import Swal from "sweetalert2";
 
 class LoginPage {
-  constructor({ error = null, isLoading = false, container }) {
+  constructor({ error = null, isLoading = false }) {
     this._error = error;
     this._isLoading = isLoading;
-    this._container = container;
     this._loginHandler = null;
+    this._container = document.querySelector("#pageContent");
   }
 
   render() {
@@ -23,84 +25,20 @@ class LoginPage {
     if (form && !this._isLoading) {
       form.addEventListener("submit", (e) => {
         e.preventDefault();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
 
-        if (this._validateForm()) {
-          const email = document.getElementById("email").value.trim();
-          const password = document.getElementById("password").value;
-
-          if (this._loginHandler) {
-            this._loginHandler({ email, password });
-          }
+        if (this._loginHandler) {
+          this._loginHandler({ email, password });
         }
       });
     }
   }
 
-  /**
-   * Validate form before submission
-   * @returns {boolean} Whether form is valid
-   */
-  _validateForm() {
-    const email = document.getElementById("email");
-    const password = document.getElementById("password");
-
-    if (!email.validity.valid) {
-      this._showFieldError(email, "Please enter a valid email address");
-      return false;
-    }
-
-    if (password.value.length < 8) {
-      this._showFieldError(
-        password,
-        "Password must be at least 8 characters long"
-      );
-      return false;
-    }
-
-    return true;
-  }
-
-  /**
-   * Show form field error
-   * @param {HTMLElement} field - Form field
-   * @param {string} message - Error message
-   */
-  _showFieldError(field, message) {
-    field.classList.add("form-input--error");
-
-    let errorElement = field.nextElementSibling;
-    if (!errorElement || !errorElement.classList.contains("form-error")) {
-      errorElement = document.createElement("p");
-      errorElement.className = "form-error";
-      field.parentNode.insertBefore(errorElement, field.nextSibling);
-    }
-
-    errorElement.textContent = message;
-
-    field.addEventListener(
-      "input",
-      () => {
-        field.classList.remove("form-input--error");
-        if (errorElement && errorElement.parentNode) {
-          errorElement.parentNode.removeChild(errorElement);
-        }
-      },
-      { once: true }
-    );
-  }
-
-  /**
-   * Set login handler function
-   * @param {Function} handler - Login handler function
-   */
   setLoginHandler(handler) {
     this._loginHandler = handler;
   }
 
-  /**
-   * Set loading state
-   * @param {boolean} isLoading - Whether login is in progress
-   */
   setLoading(isLoading) {
     this._isLoading = isLoading;
 
@@ -118,8 +56,22 @@ class LoginPage {
     });
   }
 
+  showLoginSuccess(onConfirmCallback) {
+    Swal.fire({
+      title: "Login Berhasil!",
+      text: "Anda berhasil masuk.",
+      icon: "success",
+      confirmButtonColor: "#EB4231",
+      confirmButtonText: "Lanjutkan",
+    }).then(() => {
+      if (typeof onConfirmCallback === "function") {
+        onConfirmCallback();
+      }
+    });
+  }
+
   cleanup() {
-    // Nothing to clean up
+    // Optional: remove listeners
   }
 }
 

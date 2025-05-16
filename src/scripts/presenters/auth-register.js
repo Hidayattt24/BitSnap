@@ -1,95 +1,68 @@
 import RegisterPage from "../views/pages/sign-up.js";
 import authRepository from "../services/user-session.js";
 import { applyCustomAnimation } from "../utils/transition-util.js";
-import Swal from "sweetalert2";
 
 class RegisterPresenter {
   constructor(params = {}) {
     this._params = params;
     this._view = null;
-    this._container = document.querySelector("#pageContent");
     this._error = null;
     this._isLoading = false;
 
     this._handleRegister = this._handleRegister.bind(this);
+    this._redirectToHome = this._redirectToHome.bind(this);
+    this._redirectToLogin = this._redirectToLogin.bind(this);
   }
 
   async init() {
-    if (authRepository.isAuthenticated()) {
-      Swal.fire({
-        title: "Already Logged In",
-        text: "You are already logged in. Please log out first to register a new account.",
-        icon: "info",
-        confirmButtonColor: "#EB4231",
-      }).then(() => {
-        window.location.hash = "#/";
-      });
-      return;
-    }
-
     applyCustomAnimation("#pageContent", {
       name: "register-transition",
       duration: 400,
     });
 
-    this._renderView();
-  }
-
-  _renderView() {
     this._view = new RegisterPage({
       error: this._error,
       isLoading: this._isLoading,
-      container: this._container,
     });
 
-    this._view.render();
     this._view.setRegisterHandler(this._handleRegister);
-  }
 
-  /**
-   * Handle registration form submission
-   * @param {Object} userData - User registration data
-   */
-  async _handleRegister(userData) {
-    if (this._isLoading) {
+    if (authRepository.isAuthenticated()) {
+      this._view.showAlreadyLoggedInWarning(this._redirectToHome);
       return;
     }
 
+    this._view.render();
+  }
+
+  async _handleRegister(userData) {
+    if (this._isLoading) return;
+
+    this._isLoading = true;
+    this._view.setLoading(true);
+
     try {
-      this._isLoading = true;
-
-      if (this._view) {
-        this._view.setLoading(true);
-      }
-
       await authRepository.register(userData);
 
-      if (this._view) {
-        this._view.showSuccessMessage();
-      }
-
-      Swal.fire({
-        title: "Registration Successful!",
-        text: "Your account has been created. You can now log in.",
-        icon: "success",
-        confirmButtonColor: "#EB4231",
-        confirmButtonText: "Login Now",
-      }).then(() => {
-        window.location.hash = "#/login";
-      });
+      this._view.setLoading(false);
+      this._view.showSuccessMessage();
+      this._view.showRegistrationSuccess(this._redirectToLogin);
     } catch (error) {
-      console.error("Registration failed:", error);
-
       this._error = error.message || "Registration failed. Please try again.";
-      this._isLoading = false;
-      this._renderView();
+      this._view.setError(this._error);
+      this._view.render(); // re-render with error
     } finally {
       this._isLoading = false;
-
-      if (this._view) {
-        this._view.setLoading(false);
-      }
+      this._view.setLoading(false);
     }
+  }
+
+  _redirectToHome() {
+    window.location.hash = "#/";
+  }
+
+  _redirectToLogin() {
+    window.location.hash = "#/login";
   }
 
   cleanup() {

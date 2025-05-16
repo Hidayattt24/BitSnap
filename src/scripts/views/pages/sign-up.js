@@ -1,11 +1,12 @@
 import createRegisterTemplate from "../template/register-template.js";
+import Swal from "sweetalert2";
 
 class RegisterPage {
-  constructor({ error = null, isLoading = false, container }) {
+  constructor({ error = null, isLoading = false }) {
     this._error = error;
     this._isLoading = isLoading;
-    this._container = container;
     this._registerHandler = null;
+    this._container = document.querySelector("#pageContent");
   }
 
   render() {
@@ -37,10 +38,6 @@ class RegisterPage {
     }
   }
 
-  /**
-   * Validate form before submission
-   * @returns {boolean} Whether form is valid
-   */
   _validateForm() {
     const name = document.getElementById("name");
     const email = document.getElementById("email");
@@ -58,10 +55,7 @@ class RegisterPage {
     }
 
     if (password.value.length < 8) {
-      this._showFieldError(
-        password,
-        "Password must be at least 8 characters long"
-      );
+      this._showFieldError(password, "Password must be at least 8 characters long");
       return false;
     }
 
@@ -73,11 +67,6 @@ class RegisterPage {
     return true;
   }
 
-  /**
-   * Show form field error
-   * @param {HTMLElement} field - Form field
-   * @param {string} message - Error message
-   */
   _showFieldError(field, message) {
     field.classList.add("form-input--error");
 
@@ -102,18 +91,10 @@ class RegisterPage {
     );
   }
 
-  /**
-   * Set register handler function
-   * @param {Function} handler - Register handler function
-   */
   setRegisterHandler(handler) {
     this._registerHandler = handler;
   }
 
-  /**
-   * Set loading state
-   * @param {boolean} isLoading - Whether registration is in progress
-   */
   setLoading(isLoading) {
     this._isLoading = isLoading;
 
@@ -131,12 +112,13 @@ class RegisterPage {
     });
   }
 
+  setError(errorMessage) {
+    this._error = errorMessage;
+  }
+
   showSuccessMessage() {
     const formElement = document.getElementById("registerForm");
-
-    if (!formElement) {
-      return;
-    }
+    if (!formElement) return;
 
     const successMessage = document.createElement("div");
     successMessage.className = "success-message";
@@ -147,12 +129,38 @@ class RegisterPage {
     `;
 
     formElement.innerHTML = "";
-
     formElement.appendChild(successMessage);
   }
 
+  showAlreadyLoggedInWarning(onConfirmCallback) {
+    Swal.fire({
+      title: "Already Logged In",
+      text: "You are already logged in. Please log out first to register a new account.",
+      icon: "info",
+      confirmButtonColor: "#EB4231",
+    }).then(() => {
+      if (typeof onConfirmCallback === "function") {
+        onConfirmCallback();
+      }
+    });
+  }
+
+  showRegistrationSuccess(onConfirmCallback) {
+    Swal.fire({
+      title: "Registration Successful!",
+      text: "Your account has been created. You can now log in.",
+      icon: "success",
+      confirmButtonColor: "#EB4231",
+      confirmButtonText: "Login Now",
+    }).then(() => {
+      if (typeof onConfirmCallback === "function") {
+        onConfirmCallback();
+      }
+    });
+  }
+
   cleanup() {
-    // Nothing to clean up
+    // Optional: remove listeners if needed
   }
 }
 
