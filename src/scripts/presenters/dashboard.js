@@ -2,19 +2,17 @@ import HomePage from "../views/pages/home-screen.js";
 import storyRepository from "../services/story-data.js";
 import authRepository from "../services/user-session.js";
 import { applyCustomAnimation } from "../utils/transition-util.js";
-import Swal from "sweetalert2";
 
 class HomePresenter {
   constructor(params = {}) {
-    this._params = params;
-    this._view = null;
-    this._container = document.querySelector("#pageContent");
+    this._view = new HomePage(params.container);
     this._isLoading = false;
     this._error = null;
     this._stories = [];
 
     this._fetchStories = this._fetchStories.bind(this);
     this._handleRetry = this._handleRetry.bind(this);
+    this._handleAuthRedirect = this._handleAuthRedirect.bind(this);
   }
 
   async init() {
@@ -41,21 +39,8 @@ class HomePresenter {
         this._stories = [];
         this._isLoading = false;
         this._renderView();
-
-        Swal.fire({
-          title: "Welcome to BitSnap!",
-          text: "Log in to see and share stories",
-          icon: "warning",
-          confirmButtonColor: "#EB4231",
-          confirmButtonText: "Log In",
-          showCancelButton: true,
-          cancelButtonText: "Maybe Later",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.hash = "#/login";
-          }
-        });
-
+        
+        this._view.showAuthenticationPrompt(this._handleAuthRedirect);
         return;
       }
 
@@ -77,41 +62,36 @@ class HomePresenter {
   }
 
   _renderLoading() {
-    this._view = new HomePage({
+    this._view.render({
       isLoading: true,
       stories: [],
-      error: null,
-      container: this._container,
+      error: null
     });
-
-    this._view.render();
   }
 
   _renderError() {
-    this._view = new HomePage({
+    this._view.render({
       isLoading: false,
       stories: [],
-      error: this._error,
-      container: this._container,
+      error: this._error
     });
-
-    this._view.render();
     this._view.setRetryHandler(this._handleRetry);
   }
 
   _renderView() {
-    this._view = new HomePage({
+    this._view.render({
       isLoading: this._isLoading,
       stories: this._stories,
-      error: this._error,
-      container: this._container,
+      error: this._error
     });
-
-    this._view.render();
 
     if (this._error) {
       this._view.setRetryHandler(this._handleRetry);
     }
+  }
+
+  _handleAuthRedirect() {
+    window.location.hash = "#/login";
   }
 
   _handleRetry() {

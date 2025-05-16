@@ -1,18 +1,23 @@
 import createHomeTemplate from "../template/home-template.js";
 import "../components/story-card.js";
 import MapHelper from "../../utils/location-util.js";
+import Swal from "sweetalert2";
 
 class HomePage {
-  constructor({ stories = [], isLoading = false, error = null, container }) {
+  constructor(container) {
+    this._container = container || document.querySelector("#pageContent");
+    this._mapHelper = new MapHelper();
+    this._mapInitialized = false;
+    this._stories = [];
+    this._isLoading = false;
+    this._error = null;
+  }
+
+  render({ stories = [], isLoading = false, error = null }) {
     this._stories = stories;
     this._isLoading = isLoading;
     this._error = error;
-    this._container = container;
-    this._mapHelper = new MapHelper();
-    this._mapInitialized = false;
-  }
 
-  render() {
     this._container.innerHTML = createHomeTemplate({
       isLoading: this._isLoading,
       error: this._error,
@@ -30,7 +35,7 @@ class HomePage {
   }
 
   _renderStories() {
-    const storiesContainer = document.getElementById("storiesList");
+    const storiesContainer = this._container.querySelector("#storiesList");
     if (!storiesContainer) return;
 
     storiesContainer.innerHTML = "";
@@ -50,7 +55,7 @@ class HomePage {
 
     if (storiesWithLocation.length === 0) return;
 
-    const mapContainer = document.getElementById("storyMap");
+    const mapContainer = this._container.querySelector("#storyMap");
     if (!mapContainer) return;
 
     this._mapHelper.initMap(mapContainer, {
@@ -63,7 +68,7 @@ class HomePage {
   }
 
   _attachRetryHandler() {
-    const retryButton = document.getElementById("retryButton");
+    const retryButton = this._container.querySelector("#retryButton");
     if (retryButton && this._retryHandler) {
       retryButton.addEventListener("click", this._retryHandler);
     }
@@ -79,6 +84,22 @@ class HomePage {
     if (this._error) {
       this._attachRetryHandler();
     }
+  }
+
+  showAuthenticationPrompt(onConfirm) {
+    Swal.fire({
+      title: "Welcome to BitSnap!",
+      text: "Log in to see and share stories",
+      icon: "warning",
+      confirmButtonColor: "#EB4231",
+      confirmButtonText: "Log In",
+      showCancelButton: true,
+      cancelButtonText: "Maybe Later",
+    }).then((result) => {
+      if (result.isConfirmed && onConfirm) {
+        onConfirm();
+      }
+    });
   }
 
   cleanup() {

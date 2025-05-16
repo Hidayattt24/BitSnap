@@ -110,7 +110,7 @@ class Router {
 
           this._currentPage = new page({
             container: pageContainer,
-            ...params
+            ...params,
           });
           
           await this._currentPage.init();

@@ -2,36 +2,21 @@ import AddStoryPage from "../views/pages/create-story.js";
 import storyRepository from "../services/story-data.js";
 import authRepository from "../services/user-session.js";
 import webPushHelper from "../utils/web-push-helper.js";
-import { applyCustomAnimation } from "../utils/transition-util.js";
 import Swal from "sweetalert2";
 
 class AddStoryPresenter {
-  constructor(params = {}) {
-    this._params = params;
+  constructor({ container }) {
+    this._container = container;
     this._view = null;
-    this._container = document.querySelector("#pageContent");
     this._isLoading = false;
-
     this._handleSubmit = this._handleSubmit.bind(this);
   }
 
   async init() {
     if (!authRepository.isAuthenticated()) {
-      Swal.fire({
-        title: "Authentication Required",
-        text: "Please login to add a new story",
-        icon: "warning",
-        confirmButtonColor: "#EB4231",
-      }).then(() => {
-        window.location.hash = "#/login";
-      });
+      await this._showAuthenticationRequired();
       return;
     }
-
-    applyCustomAnimation("#pageContent", {
-      name: "add-story-transition",
-      duration: 400,
-    });
 
     this._renderView();
   }
@@ -40,10 +25,20 @@ class AddStoryPresenter {
     this._view = new AddStoryPage({
       isLoading: this._isLoading,
       container: this._container,
+      onSubmit: this._handleSubmit,
     });
 
     this._view.render();
-    this._view.setSubmitHandler(this._handleSubmit);
+  }
+
+  async _showAuthenticationRequired() {
+    await Swal.fire({
+      title: "Authentication Required",
+      text: "Please login to add a new story",
+      icon: "warning",
+      confirmButtonColor: "#EB4231",
+    });
+    window.location.hash = "#/login";
   }
 
   /**
@@ -51,58 +46,52 @@ class AddStoryPresenter {
    * @param {Object} storyData
    */
   async _handleSubmit(storyData) {
-    if (this._isLoading) {
-      return;
-    }
+    if (this._isLoading) return;
 
     try {
       this._isLoading = true;
-
-      if (this._view) {
-        this._view.setLoading(true);
-      }
+      this._view.setLoading(true);
 
       const isAuthenticated = authRepository.isAuthenticated();
+      await storyRepository.addStory(storyData, isAuthenticated);
 
-      const response = await storyRepository.addStory(
-        storyData,
-        isAuthenticated
-      );
-
-      if (this._view) {
-        this._view.showSuccessMessage();
-      }
-
-      Swal.fire({
-        title: "Story Posted!",
-        text: "Your story has been successfully shared",
-        icon: "success",
-        timer: 2000,
-        timerProgressBar: true,
-        showConfirmButton: false,
-      });
-
-      this._triggerPushNotification(storyData.description);
-
-      setTimeout(() => {
-        window.location.hash = "#/";
-      }, 2000);
+      await this._handleSuccessfulSubmission(storyData.description);
     } catch (error) {
-      console.error("Failed to submit story:", error);
-
-      Swal.fire({
-        title: "Failed to Post Story",
-        text: error.message || "An error occurred while posting your story",
-        icon: "error",
-        confirmButtonColor: "#EB4231",
-      });
-
-      this._isLoading = false;
-
-      if (this._view) {
-        this._view.setLoading(false);
-      }
+      await this._handleSubmissionError(error);
     }
+  }
+
+  async _handleSuccessfulSubmission(description) {
+    this._view.showSuccessMessage();
+
+    await Swal.fire({
+      title: "Story Posted!",
+      text: "Your story has been successfully shared",
+      icon: "success",
+      timer: 2000,
+      timerProgressBar: true,
+      showConfirmButton: false,
+    });
+
+    await this._triggerPushNotification(description);
+
+    setTimeout(() => {
+      window.location.hash = "#/";
+    }, 2000);
+  }
+
+  async _handleSubmissionError(error) {
+    console.error("Failed to submit story:", error);
+
+    await Swal.fire({
+      title: "Failed to Post Story",
+      text: error.message || "An error occurred while posting your story",
+      icon: "error",
+      confirmButtonColor: "#EB4231",
+    });
+
+    this._isLoading = false;
+    this._view.setLoading(false);
   }
 
   /**
@@ -124,7 +113,6 @@ class AddStoryPresenter {
           }
         };
 
-        // Notification will be triggered from server
         console.log('Story created, server will send push notification');
       }
     } catch (error) {
@@ -135,6 +123,7 @@ class AddStoryPresenter {
   cleanup() {
     if (this._view) {
       this._view.cleanup();
+      this._view = null;
     }
   }
 }

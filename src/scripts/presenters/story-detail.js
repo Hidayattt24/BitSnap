@@ -6,8 +6,9 @@ class DetailPresenter {
   constructor(params = {}) {
     this._params = params;
     this._storyId = params.id;
-    this._view = null;
-    this._container = document.querySelector("#pageContent");
+    this._view = new DetailPage({
+      container: params.container
+    });
     this._isLoading = false;
     this._error = null;
     this._story = null;
@@ -58,37 +59,28 @@ class DetailPresenter {
   }
 
   _renderLoading() {
-    this._view = new DetailPage({
+    this._view.render({
       isLoading: true,
       story: null,
-      error: null,
-      container: this._container,
+      error: null
     });
-
-    this._view.render();
   }
 
   _renderError() {
-    this._view = new DetailPage({
+    this._view.render({
       isLoading: false,
       story: null,
-      error: this._error,
-      container: this._container,
+      error: this._error
     });
-
-    this._view.render();
     this._view.setRetryHandler(this._handleRetry);
   }
 
   _renderView() {
-    this._view = new DetailPage({
+    this._view.render({
       isLoading: false,
       story: this._story,
-      error: null,
-      container: this._container,
+      error: null
     });
-
-    this._view.render();
   }
 
   _handleRetry() {

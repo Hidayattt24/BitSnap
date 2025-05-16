@@ -1,18 +1,20 @@
 import createAddStoryTemplate from "../template/create-template.js";
 import MapHelper from "../../utils/location-util.js";
 import CameraHelper from "../../utils/camera-util.js";
+import { applyCustomAnimation } from "../../utils/transition-util.js";
 
 class AddStoryPage {
-  constructor({ isLoading = false, container }) {
+  constructor({ isLoading = false, container, onSubmit }) {
     this._isLoading = isLoading;
     this._container = container;
+    this._onSubmit = onSubmit;
     this._mapHelper = new MapHelper();
     this._cameraHelper = new CameraHelper();
     this._selectedLocation = null;
     this._photoFile = null;
     this._isCameraActive = false;
-    this._submitHandler = null;
 
+    // Bind methods
     this._initCamera = this._initCamera.bind(this);
     this._stopCamera = this._stopCamera.bind(this);
     this._takePhoto = this._takePhoto.bind(this);
@@ -20,16 +22,23 @@ class AddStoryPage {
     this._onLocationSelected = this._onLocationSelected.bind(this);
     this._getUserLocation = this._getUserLocation.bind(this);
     this._resetPhoto = this._resetPhoto.bind(this);
+    this._handleSubmit = this._handleSubmit.bind(this);
   }
 
   render() {
+    // Apply transition animation directly with container element
+    applyCustomAnimation(this._container, {
+      name: "add-story-transition",
+      duration: 400,
+    });
+
     this._container.innerHTML = createAddStoryTemplate({
       isLoading: this._isLoading,
     });
 
     this._initMap();
-
     this._attachEventListeners();
+    this._initializePhotoUpload();
   }
 
   _initMap() {
@@ -44,6 +53,7 @@ class AddStoryPage {
   }
 
   _attachEventListeners() {
+    // Camera controls
     const startCameraButton = document.getElementById("startCameraButton");
     const takePictureButton = document.getElementById("takePictureButton");
     const switchCameraButton = document.getElementById("switchCameraButton");
@@ -65,29 +75,22 @@ class AddStoryPage {
       resetPhotoButton.addEventListener("click", this._resetPhoto);
     }
 
-    const getUserLocationButton = document.getElementById(
-      "getUserLocationButton"
-    );
+    // Location controls
+    const getUserLocationButton = document.getElementById("getUserLocationButton");
     if (getUserLocationButton) {
       getUserLocationButton.addEventListener("click", this._getUserLocation);
     }
 
+    // Photo input
     const photoInput = document.getElementById("photoInput");
     if (photoInput) {
       photoInput.addEventListener("change", this._handleFileInput.bind(this));
     }
 
+    // Form submission
     const form = document.getElementById("addStoryForm");
     if (form) {
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        if (this._validateForm()) {
-          if (typeof this._submitHandler === "function") {
-            const formData = this._getFormData();
-            this._submitHandler(formData);
-          }
-        }
-      });
+      form.addEventListener("submit", this._handleSubmit);
     }
   }
 
@@ -397,47 +400,42 @@ class AddStoryPage {
     formElement.appendChild(successMessage);
   }
 
-  /**
-   * Set form submission handler
-   * @param {Function} handler - Submission handler
-   */
-  setSubmitHandler(handler) {
-    if (typeof handler === "function") {
-      this._submitHandler = handler;
-    }
-  }
-
-  /**
-   * Set loading state during submission
-   * @param {boolean} isLoading - Whether form is submitting
-   */
-  setLoading(isLoading) {
-    this._isLoading = isLoading;
-
-    const submitButton = document.getElementById("submitButton");
-    if (submitButton) {
-      submitButton.disabled = isLoading;
-      submitButton.innerHTML = isLoading
-        ? '<i class="fas fa-spinner fa-spin"></i> Posting...'
-        : '<i class="fas fa-paper-plane"></i> Post Story';
+  _handleSubmit(event) {
+    event.preventDefault();
+    
+    if (!this._validateForm()) {
+      return;
     }
 
-    const formElements = this._container.querySelectorAll(
-      "button, input, textarea"
-    );
-    formElements.forEach((el) => {
-      if (
-        el.id !== "takePictureButton" &&
-        el.id !== "switchCameraButton" &&
-        el.id !== "resetPhotoButton"
-      ) {
-        el.disabled = isLoading;
-      }
-    });
+    const formData = this._getFormData();
+    this._onSubmit(formData);
   }
 
   cleanup() {
     this._stopCamera();
+    
+    // Remove event listeners
+    const elements = [
+      "startCameraButton",
+      "takePictureButton",
+      "switchCameraButton",
+      "resetPhotoButton",
+      "getUserLocationButton",
+      "photoInput",
+      "addStoryForm"
+    ];
+
+    elements.forEach(id => {
+      const element = document.getElementById(id);
+      if (element) {
+        element.replaceWith(element.cloneNode(true));
+      }
+    });
+
+    // Clear container
+    if (this._container) {
+      this._container.innerHTML = "";
+    }
   }
 
   _initializePhotoUpload() {
@@ -483,6 +481,36 @@ class AddStoryPage {
     };
 
     reader.readAsDataURL(file);
+  }
+
+  /**
+   * Set loading state during submission
+   * @param {boolean} isLoading - Whether form is submitting
+   */
+  setLoading(isLoading) {
+    this._isLoading = isLoading;
+
+    const submitButton = this._container.querySelector("#submitButton");
+    if (submitButton) {
+      submitButton.disabled = isLoading;
+      submitButton.innerHTML = isLoading
+        ? '<i class="fas fa-spinner fa-spin"></i> Posting...'
+        : '<i class="fas fa-paper-plane"></i> Post Story';
+    }
+
+    // Disable form elements during loading
+    const formElements = this._container.querySelectorAll(
+      "button, input, textarea"
+    );
+    formElements.forEach((el) => {
+      if (
+        el.id !== "takePictureButton" &&
+        el.id !== "switchCameraButton" &&
+        el.id !== "resetPhotoButton"
+      ) {
+        el.disabled = isLoading;
+      }
+    });
   }
 }
 

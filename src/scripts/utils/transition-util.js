@@ -18,7 +18,7 @@ const applyViewTransition = async (updateCallback) => {
 
 /**
  * Apply custom animation to an element during view transition
- * @param {string} elementSelector - CSS selector for the element
+ * @param {string|HTMLElement} target - CSS selector or DOM element
  * @param {Object} options - Animation options
  * @param {string} options.name - Animation name
  * @param {number} options.duration - Animation duration in milliseconds
@@ -26,10 +26,10 @@ const applyViewTransition = async (updateCallback) => {
  * @returns {void}
  */
 const applyCustomAnimation = (
-  elementSelector,
+  target,
   { name = "fade", duration = 300, easing = "ease" } = {}
 ) => {
-  const element = document.querySelector(elementSelector);
+  const element = typeof target === 'string' ? document.querySelector(target) : target;
   if (!element) return;
 
   element.style.viewTransitionName = name;
