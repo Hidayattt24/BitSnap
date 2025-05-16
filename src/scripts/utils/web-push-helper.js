@@ -20,7 +20,7 @@ class WebPushHelper {
 
     try {
       // Register service worker explicitly
-      const registration = await navigator.serviceWorker.register('/sw-handler.js');
+      const registration = await navigator.serviceWorker.register('/sw.js');
       this._swRegistration = registration;
       console.log('Service Worker registered with scope:', registration.scope);
 
