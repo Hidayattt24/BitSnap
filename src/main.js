@@ -9,13 +9,14 @@ import "./scripts/app.js";
 
 import { registerSW } from "virtual:pwa-register";
 
-if (import.meta.env.PROD) {
-  registerSW({
-    onNeedRefresh() {
-      console.log("New content available, click on reload button to update.");
-    },
-    onOfflineReady() {
-      console.log("App ready to work offline");
-    },
-  });
-}
+const updateSW = registerSW({
+  onNeedRefresh() {
+    if (confirm("New content available. Click OK to update.")) {
+      updateSW(true);
+    }
+  },
+  onOfflineReady() {
+    console.log("App ready to work offline");
+  },
+  immediate: true
+});

@@ -45,7 +45,7 @@ const createHomeTemplate = ({
   const emptyTemplate = `
   <div class="welcome-section">
     <div class="welcome-content">
-      <img src="/src/public/icon/icon.svg" alt="Welcome to BitSnap" class="welcome-image">
+      <img src="/favicon.png" alt="Welcome to BitSnap" class="welcome-image">
       <h2 class="welcome-title">Welcome to BitSnap!</h2>
       <p class="welcome-description">
         Share your learning journey with the Dicoding community. Capture moments, mark locations, and inspire others.

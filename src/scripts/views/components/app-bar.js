@@ -41,7 +41,7 @@ class AppBar extends HTMLElement {
     this.innerHTML = `
       <nav class="app-nav">
         <div class="app-nav__brand">
-          <img src="/src/public/icon/icon.svg" alt="BitSnap" class="app-nav__logo">
+          <img src="/favicon.png" alt="BitSnap" class="app-nav__logo">
         </div>
         
         <button class="menu-toggle" aria-label="Toggle menu">
