@@ -1,174 +1,87 @@
-// Precache manifest will be injected by the build process
-self.__WB_MANIFEST;
+import { precacheAndRoute } from 'workbox-precaching';
+import { registerRoute } from 'workbox-routing';
+import { StaleWhileRevalidate, NetworkFirst, CacheFirst } from 'workbox-strategies';
+import { ExpirationPlugin } from 'workbox-expiration';
+import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 
-const CACHE_NAME = 'bitsnap';
-const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/favicon.png',
-  '/src/main.js',
-  '/src/scripts/app.js',
-  '/src/styles/style.css',
-  '/leaflet/marker-icon.svg',
-  '/leaflet/marker-icon@2x.svg',
-  '/leaflet/marker-shadow.svg',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
-  'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
-  'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
-];
+// Use with precache injection
+precacheAndRoute(self.__WB_MANIFEST);
 
-// Install Service Worker
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(urlsToCache);
-    })
-  );
-});
-
-// Activate Service Worker
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
-  );
-});
-
-// Fetch Event Strategy
-self.addEventListener('fetch', (event) => {
-  const request = event.request;
-  const url = new URL(request.url);
-
-  // Skip caching for DELETE requests
-  if (request.method === 'DELETE') {
-    event.respondWith(fetch(request));
-    return;
-  }
-
-  // Handle map tile requests
-  if (url.hostname.includes('tile.openstreetmap.org')) {
-    event.respondWith(
-      fetch(request)
-        .then(response => {
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME)
-            .then(cache => {
-              cache.put(request, responseToCache);
-            });
-          return response;
-        })
-        .catch(() => {
-          return caches.match(request)
-            .then(response => {
-              if (response) {
-                return response;
-              }
-              // Return empty transparent PNG if no cached response
-              return new Response(
-                new Uint8Array([
-                  0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,
-                  0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52,
-                  0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
-                  0x08, 0x06, 0x00, 0x00, 0x00, 0x1F, 0x15, 0xC4,
-                  0x89, 0x00, 0x00, 0x00, 0x0A, 0x49, 0x44, 0x41,
-                  0x54, 0x78, 0x9C, 0x63, 0x00, 0x00, 0x00, 0x05,
-                  0x00, 0x01, 0x0D, 0x0A, 0x2D, 0xB4, 0x00, 0x00,
-                  0x00, 0x00, 0x49, 0x45, 0x4E, 0x44, 0xAE, 0x42,
-                  0x60, 0x82
-                ]).buffer,
-                {
-                  status: 200,
-                  statusText: 'OK',
-                  headers: {
-                    'Content-Type': 'image/png'
-                  }
-                }
-              );
-            });
-        })
-    );
-    return;
-  }
-
-  // Handle image requests from story-api.dicoding.dev
-  if (url.origin === 'https://story-api.dicoding.dev' && url.pathname.includes('/images/')) {
-    event.respondWith(
-      fetch(request)
-        .then(response => {
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME)
-            .then(cache => {
-              cache.put(request, responseToCache);
-            });
-          return response;
-        })
-        .catch(() => {
-          return caches.match(request)
-            .then(response => {
-              if (response) {
-                return response;
-              }
-              // Return placeholder image if no cached response
-              return fetch('/favicon.png');
-            });
-        })
-    );
-    return;
-  }
-
-  // Handle API requests
-  if (url.origin === 'https://story-api.dicoding.dev') {
-    // Don't cache POST or DELETE requests
-    if (request.method === 'POST' || request.method === 'DELETE') {
-      event.respondWith(fetch(request));
-      return;
-    }
-  }
-
-  // Handle all other requests
-  event.respondWith(
-    caches.match(request)
-      .then((response) => {
-        if (response) {
-          return response;
-        }
-
-        const fetchRequest = request.clone();
-
-        return fetch(fetchRequest)
-          .then((response) => {
-            if (!response || response.status !== 200 || request.method !== 'GET') {
-              return response;
-            }
-
-            const responseToCache = response.clone();
-
-            caches.open(CACHE_NAME)
-              .then((cache) => {
-                cache.put(request, responseToCache);
-              });
-
-            return response;
-          })
-          .catch((error) => {
-            // For API requests, return cached version if available
-            if (request.url.includes('story-api.dicoding.dev')) {
-              return caches.match(request);
-            }
-            throw error;
-          });
+// API Routes - NetworkFirst strategy
+registerRoute(
+  ({ url }) => url.origin === 'https://story-api.dicoding.dev' && url.pathname.startsWith('/v1/stories'),
+  new NetworkFirst({
+    cacheName: 'api-cache',
+    plugins: [
+      new CacheableResponsePlugin({
+        statuses: [0, 200]
+      }),
+      new ExpirationPlugin({
+        maxEntries: 50,
+        maxAgeSeconds: 30 * 24 * 60 * 60 // 30 days
       })
-  );
-});
+    ]
+  })
+);
 
+// Story Images - StaleWhileRevalidate strategy
+registerRoute(
+  ({ url }) => url.origin === 'https://story-api.dicoding.dev' && url.pathname.includes('/images/'),
+  new StaleWhileRevalidate({
+    cacheName: 'story-images',
+    plugins: [
+      new CacheableResponsePlugin({
+        statuses: [0, 200]
+      }),
+      new ExpirationPlugin({
+        maxEntries: 100,
+        maxAgeSeconds: 30 * 24 * 60 * 60 // 30 days
+      })
+    ],
+    matchOptions: {
+      ignoreSearch: true
+    },
+    fallback: {
+      image: '/favicon.png'
+    }
+  })
+);
+
+// Map Tiles - StaleWhileRevalidate strategy
+registerRoute(
+  ({ url }) => url.hostname.includes('tile.openstreetmap.org'),
+  new StaleWhileRevalidate({
+    cacheName: 'map-tiles',
+    plugins: [
+      new CacheableResponsePlugin({
+        statuses: [0, 200]
+      }),
+      new ExpirationPlugin({
+        maxEntries: 1000,
+        maxAgeSeconds: 7 * 24 * 60 * 60 // 7 days
+      })
+    ]
+  })
+);
+
+// Static Assets - CacheFirst strategy
+registerRoute(
+  ({ url }) => url.hostname.includes('unpkg.com') || url.hostname.includes('cdnjs.cloudflare.com'),
+  new CacheFirst({
+    cacheName: 'static-assets',
+    plugins: [
+      new CacheableResponsePlugin({
+        statuses: [0, 200]
+      }),
+      new ExpirationPlugin({
+        maxEntries: 60,
+        maxAgeSeconds: 30 * 24 * 60 * 60 // 30 days
+      })
+    ]
+  })
+);
+
+// Push notification handler
 self.addEventListener('push', (event) => {
   let notificationData = {};
 
