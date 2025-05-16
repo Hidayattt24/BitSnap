@@ -86,6 +86,7 @@ export default defineConfig({
           'leaflet/*.svg',
           'icons/*.png'
         ],
+        navigateFallback: '/index.html',
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/story-api\.dicoding\.dev\/v1\/stories(?!\/guest)/,
@@ -99,26 +100,36 @@ export default defineConfig({
               },
               cacheableResponse: {
                 statuses: [0, 200]
+              },
+              backgroundSync: {
+                name: 'api-queue',
+                options: {
+                  maxRetentionTime: 24 * 60 // 24 hours
+                }
               }
             }
           },
           {
             urlPattern: /^https:\/\/story-api\.dicoding\.dev\/.*\/images\/.*/,
-            handler: 'CacheFirst',
+            handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'story-images',
               expiration: {
-                maxEntries: 50,
+                maxEntries: 100,
                 maxAgeSeconds: 30 * 24 * 60 * 60 // 30 days
               },
               cacheableResponse: {
                 statuses: [0, 200]
+              },
+              fetchOptions: {
+                mode: 'cors',
+                credentials: 'omit'
               }
             }
           },
           {
             urlPattern: /^https:\/\/tile\.openstreetmap\.org\/.*/,
-            handler: 'CacheFirst',
+            handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'map-tiles',
               expiration: {
@@ -127,6 +138,10 @@ export default defineConfig({
               },
               cacheableResponse: {
                 statuses: [0, 200]
+              },
+              fetchOptions: {
+                mode: 'cors',
+                credentials: 'omit'
               }
             }
           },
