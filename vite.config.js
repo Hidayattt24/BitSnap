@@ -4,11 +4,35 @@ import { VitePWA } from "vite-plugin-pwa";
 export default defineConfig({
   plugins: [
     VitePWA({
-      strategies: 'injectManifest',
-      srcDir: 'public',
-      filename: 'sw.js',
       registerType: 'prompt',
-      injectRegister: null,
+      includeAssets: ['favicon.png', 'icons/*.png', 'leaflet/*.svg'],
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,jpg,jpeg,json}'],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/story-api\.dicoding\.dev\/.*\/images\/.*/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'story-images',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 30 * 24 * 60 * 60 // 30 days
+              }
+            }
+          },
+          {
+            urlPattern: /^https:\/\/tile\.openstreetmap\.org\/.*/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'map-tiles',
+              expiration: {
+                maxEntries: 1000,
+                maxAgeSeconds: 7 * 24 * 60 * 60 // 7 days
+              }
+            }
+          }
+        ]
+      },
       manifest: {
         name: "BitSnap",
         short_name: "BitSnap",

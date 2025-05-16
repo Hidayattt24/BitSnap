@@ -1,5 +1,5 @@
 // Precache manifest will be injected by the build process
-self.__WB_MANIFEST
+self.__WB_MANIFEST;
 
 const CACHE_NAME = 'bitsnap';
 const urlsToCache = [

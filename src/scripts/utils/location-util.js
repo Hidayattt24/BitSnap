@@ -1,5 +1,6 @@
 import API_CONFIG from "../config/endpoint.js";
 import L from "leaflet";
+import { createDefaultIcon, createCustomIcon } from "./leaflet-icon.js";
 
 class MapHelper {
   constructor() {
@@ -68,7 +69,9 @@ class MapHelper {
     }
 
     storiesWithLocation.forEach((story) => {
-      const marker = L.marker([story.lat, story.lon]);
+      const marker = L.marker([story.lat, story.lon], {
+        icon: createDefaultIcon()
+      });
 
       marker.bindPopup(this._createPopupContent(story));
 
@@ -103,7 +106,9 @@ class MapHelper {
 
       this.clearMarkers();
 
-      const marker = L.marker([lat, lng]).addTo(this._map);
+      const marker = L.marker([lat, lng], {
+        icon: createDefaultIcon()
+      }).addTo(this._map);
       this._markers.push(marker);
 
       this._selectedLocation = { lat, lon: lng };
@@ -136,7 +141,9 @@ class MapHelper {
             this._map.setView([location.lat, location.lon], 15);
 
             this.clearMarkers();
-            const marker = L.marker([location.lat, location.lon])
+            const marker = L.marker([location.lat, location.lon], {
+              icon: createDefaultIcon()
+            })
               .addTo(this._map)
               .bindPopup("Your location")
               .openPopup();
