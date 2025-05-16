@@ -4,55 +4,11 @@ import { VitePWA } from "vite-plugin-pwa";
 export default defineConfig({
   plugins: [
     VitePWA({
-      registerType: "autoUpdate",
-      injectRegister: "auto",
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,json}'],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/cdnjs\.cloudflare\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'cdn-cache',
-              expiration: {
-                maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
-              },
-              cacheableResponse: {
-                statuses: [0, 200]
-              }
-            }
-          },
-          {
-            urlPattern: /^https:\/\/story-api\.dicoding\.dev\/.*/i,
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'api-cache',
-              expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 // 24 hours
-              },
-              cacheableResponse: {
-                statuses: [0, 200]
-              }
-            }
-          },
-          {
-            urlPattern: /^https:\/\/.*tile\.openstreetmap\.org\/.*/i,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'map-cache',
-              expiration: {
-                maxEntries: 1000,
-                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
-              },
-              cacheableResponse: {
-                statuses: [0, 200]
-              }
-            }
-          }
-        ]
-      },
+      strategies: 'injectManifest',
+      srcDir: 'public',
+      filename: 'sw.js',
+      registerType: 'prompt',
+      injectRegister: null,
       manifest: {
         name: "BitSnap",
         short_name: "BitSnap",

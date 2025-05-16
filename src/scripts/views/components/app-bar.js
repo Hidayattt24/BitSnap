@@ -82,7 +82,7 @@ class AppBar extends HTMLElement {
                  </a>
                </li>
               
-              <li class="app-nav__item">
+              <li class="app-nav__item app-nav__item--notifications">
                 <notification-toggle></notification-toggle>
               </li>
               

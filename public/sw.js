@@ -41,6 +41,12 @@ self.addEventListener('fetch', (event) => {
   const request = event.request;
   const url = new URL(request.url);
 
+  // Skip caching for DELETE requests
+  if (request.method === 'DELETE') {
+    event.respondWith(fetch(request));
+    return;
+  }
+
   // Handle map tile requests
   if (url.hostname.includes('tile.openstreetmap.org')) {
     event.respondWith(
@@ -112,6 +118,15 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Handle API requests
+  if (url.origin === 'https://story-api.dicoding.dev') {
+    // Don't cache POST or DELETE requests
+    if (request.method === 'POST' || request.method === 'DELETE') {
+      event.respondWith(fetch(request));
+      return;
+    }
+  }
+
   // Handle all other requests
   event.respondWith(
     caches.match(request)
@@ -124,7 +139,7 @@ self.addEventListener('fetch', (event) => {
 
         return fetch(fetchRequest)
           .then((response) => {
-            if (!response || response.status !== 200) {
+            if (!response || response.status !== 200 || request.method !== 'GET') {
               return response;
             }
 
@@ -160,16 +175,27 @@ self.addEventListener('push', (event) => {
         body: event.data ? event.data.text() : 'Ada story baru untuk Anda!',
         icon: '/favicon.png',
         badge: '/favicon.png',
-        vibrate: [200, 100, 200]
+        image: '/favicon.png',
+        vibrate: [100, 50, 100],
+        data: {
+          url: '/#/home'
+        },
+        actions: [
+          {
+            action: 'open',
+            title: 'Lihat Story'
+          }
+        ]
       }
     };
   }
 
-  const title = notificationData.title;
-  const options = notificationData.options;
-
   event.waitUntil(
-    self.registration.showNotification(title, options)
+    self.registration.showNotification(notificationData.title || 'BitSnap Story', {
+      ...notificationData.options,
+      requireInteraction: true,
+      tag: 'bitsnap-notification'
+    })
   );
 });
 
